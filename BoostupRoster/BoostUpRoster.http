@@ -1,0 +1,6 @@
+@BoostUpRoster_HostAddress = http://localhost:5208
+
+GET {{BoostUpRoster_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
