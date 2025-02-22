@@ -18,6 +18,11 @@ namespace Boostup.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EmployeeDetail>(x =>
+            {
+                x.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn(1000, 1);
+            });
         }
 
     }

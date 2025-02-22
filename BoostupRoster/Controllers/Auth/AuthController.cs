@@ -12,8 +12,7 @@ using System.Net;
 
 namespace Boostup.API.Controllers.Auth
 {
-    [ApiVersion(1)]
-    // [ApiVersion(2)]
+    [ApiVersion(1)] 
     [Route("api/v{v:apiVersion}/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -40,8 +39,8 @@ namespace Boostup.API.Controllers.Auth
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            //try
-            //{
+            try
+            {
                 var user = await userManagerRepository.GetUserByUserName(loginRequest.Email);
                 if (user == null) {
                     logger.LogInformation("Attempt to login with invalid email: " + loginRequest.Email);
@@ -93,10 +92,10 @@ namespace Boostup.API.Controllers.Auth
                 });
 
 
-            /*}
+            }
             catch (Exception ex)
             {
-                logger.LogInformation("Exception occured in login for: " + loginRequest.Email + "Exception :" +ex.Message);
+                logger.LogError("Exception occured in login for: " + loginRequest.Email + "Exception :" +ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
                     Success = false,
@@ -107,8 +106,7 @@ namespace Boostup.API.Controllers.Auth
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
 
-            }*/
-            
+            }
         }
 
         

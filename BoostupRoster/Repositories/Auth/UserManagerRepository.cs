@@ -1,5 +1,7 @@
 ﻿using Boostup.API.Entities;
+using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Interfaces.Auth;
+using Boostup.API.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace Boostup.API.Repositories.Auth
@@ -7,22 +9,22 @@ namespace Boostup.API.Repositories.Auth
     public class UserManagerRepository : IUserManagerRepository
     {
         private readonly UserManager<User> userManager;
-        private static readonly string DefaultRole = "User";
+        private static readonly string DefaultRole = "Employee";
         public UserManagerRepository(UserManager<User> userManager)
         {
             this.userManager = userManager;
         }
 
-        /*public async Task<User?> RegisterUser(RegisterRequestDto request)
+        public async Task<User?> RegisterUser(OnboardRequest request)
         {
             var user = new User
             {
-                UserName = request.UserName,
-                Email = request.UserName,
+                UserName = request.Email,
+                Email = request.Email,
                 FullName = request.FullName
             };
-
-            var identityResult = await userManager.CreateAsync(user, request.Password);
+            var password =  Helper.GenerateRandomString(5);
+            var identityResult = await userManager.CreateAsync(user, password);
 
             if (!identityResult.Succeeded)
             {
@@ -36,10 +38,13 @@ namespace Boostup.API.Repositories.Auth
             {
                 return null;
             }
-
+            /*
+             * TODO 
+             * Send Email To The Registered User Mentioning Its Email And Password
+             */
             return user;
 
-        }*/
+        }
 
         public async Task<Boolean> CheckPassword(User user, string password)
         {

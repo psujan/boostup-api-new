@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Employee\" />
-    <Folder Include="Repositories\Employee\" />
   </ItemGroup>
 
 </Project>

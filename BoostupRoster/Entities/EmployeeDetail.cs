@@ -1,13 +1,17 @@
-﻿namespace Boostup.API.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Boostup.API.Entities
 {
-    public class EmployeeDetail
+    public class EmployeeDetail: Base
     {
-        public int Id { get; set; }
+        public string? Address { get; set; }
+        public string? Contact { get; set; }
         public string? EmployeeCode { get; set; }
         public string? EmergencyContact { get; set; }
         public string? EmergencyContactName {  get; set; }
         public string? BirthCountry {get; set; }
         public DateOnly? DOB { get; set; }
+        public string? Gender { get; set; }
         public bool IsTaxFree { get; set; } = false;
         public string? BankName { get; set; }
         public string? AccountNumber { get; set; }

@@ -88,6 +88,12 @@ namespace Boostup.API.Data.Seeder
                     await userManager.AddToRoleAsync(employee, "Employee");
                 }
 
+                var employeeDetail = new EmployeeDetail()
+                {
+                    UserId = employee.Id
+                };
+                await dbContext.EmployeeDetail.AddAsync(employeeDetail);
+                await dbContext.SaveChangesAsync();
                 Console.WriteLine("User Seeding Completed");
             }
         }

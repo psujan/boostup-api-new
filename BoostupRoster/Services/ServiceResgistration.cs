@@ -2,8 +2,10 @@
 using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Interfaces.Auth;
+using Boostup.API.Interfaces.Employee;
 using Boostup.API.Mapper;
 using Boostup.API.Repositories.Auth;
+using Boostup.API.Repositories.Employee;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
 
@@ -19,6 +21,18 @@ namespace Boostup.API.Services
                    .AddTokenProvider<DataProtectorTokenProvider<User>>("Boostup")
                    .AddEntityFrameworkStores<ApplicationDbContext>()
                    .AddDefaultTokenProviders();
+
+            // Identity Options For Password
+            // For employee onboarding password is randomly generated
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequiredUniqueChars = 0;
+            });
 
             //Api Versioning
             builder.Services.AddApiVersioning(options => {
@@ -45,6 +59,7 @@ namespace Boostup.API.Services
             // Dependency Injection For Interfaces
             services.AddScoped<IUserManagerRepository, UserManagerRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             return services;
         }
     }
