@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
@@ -62,11 +63,11 @@ namespace Boostup.API.Controllers.Admin
                     logger.LogCritical("User Registered But Failed To Create Employee Profile: " + user.Id);
                 }
 
-                return Ok(new ApiResponse<string>()
+                return Ok(new ApiResponse<EmployeeDetailResponse>()
                 {
                     Success = true,
                     Message = "Employee " + user.FullName +" is successfully onboarded",
-                    Data = "Onboard Successful"
+                    Data =  employee
                 });
 
             }catch (Exception ex) {
@@ -101,18 +102,48 @@ namespace Boostup.API.Controllers.Admin
             }
             catch (Exception ex)
             {
+                
+                logger.LogError("Exception occured in fetching detail " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
                 {
-                    logger.LogError("Exception occured in fetching detail " + ex.Message);
-                    return new ObjectResult(new ApiResponse<string>()
-                    {
-                        Success = false,
-                        Message = ex.Message,
-                        Data = ""
-                    })
-                    {
-                        StatusCode = (int)HttpStatusCode.InternalServerError
-                    };
-                }
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+                
+            }
+        }
+
+        [MapToApiVersion(1)]
+        [HttpGet]
+        [Route("paginated")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber , int pageSize)
+        {
+            try
+            {
+                var data = await employeeRepository.GetPaginated(pageNumber, pageSize);
+                return Ok(new ApiResponse<PaginatedResponse<EmployeeDetailResponse?>>()
+                {
+                    Success = true,
+                    Message = "Data Fetched Successfully",
+                    Data =  data
+                });
+            }
+            catch (Exception ex) {
+                logger.LogError("Exception occured in fetching paginated data " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
             }
         }
     }
