@@ -9,6 +9,8 @@ namespace Boostup.API.Mapper
         public MapperProfile() 
         {
             CreateMap<User, UserResponse>();
+
+            CreateMap<EmployeeDetail, EmployeeDetailResponse>();
         }
     }
 }

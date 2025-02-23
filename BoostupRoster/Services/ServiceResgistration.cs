@@ -6,8 +6,12 @@ using Boostup.API.Interfaces.Employee;
 using Boostup.API.Mapper;
 using Boostup.API.Repositories.Auth;
 using Boostup.API.Repositories.Employee;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
+
 
 namespace Boostup.API.Services
 {
@@ -33,6 +37,29 @@ namespace Boostup.API.Services
                 options.Password.RequiredLength = 5;
                 options.Password.RequiredUniqueChars = 0;
             });
+
+            // Add Default Authentication Scheme using Bearer Tokens
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+             {
+                 //options.RequireHttpsMetadata = false;
+                 //options.SaveToken = true;
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidateLifetime = true,
+                     ValidateIssuerSigningKey = true,
+                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                     ValidAudience = builder.Configuration["Jwt:Audience"],
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                 };
+                 options.UseSecurityTokenValidators = true;
+             });
 
             //Api Versioning
             builder.Services.AddApiVersioning(options => {

@@ -2,8 +2,10 @@
 using AutoMapper;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces.Auth;
 using Boostup.API.Interfaces.Employee;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +39,7 @@ namespace Boostup.API.Controllers.Admin
         [MapToApiVersion(1)]
         [HttpPost]
         [Route("onboard")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> OnboardEmployee(OnboardRequest request)
         {
             try
@@ -80,5 +83,37 @@ namespace Boostup.API.Controllers.Admin
             }
         }
 
+        [MapToApiVersion(1)]
+        [HttpGet]
+        [Route("{id}")]
+        [Authorize(Roles = "SuperAdmin ,Employee")]
+        public async Task<IActionResult> GetEmployeeDetail([FromRoute] int id)
+        {
+            try
+            {
+                var employee = await employeeRepository.GetById(id);
+                return Ok(new ApiResponse<EmployeeDetailResponse>()
+                {
+                    Success = true,
+                    Message = "Data Fetched Successfullu",
+                    Data = employee
+                });
+            }
+            catch (Exception ex)
+            {
+                {
+                    logger.LogError("Exception occured in fetching detail " + ex.Message);
+                    return new ObjectResult(new ApiResponse<string>()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ""
+                    })
+                    {
+                        StatusCode = (int)HttpStatusCode.InternalServerError
+                    };
+                }
+            }
+        }
     }
 }
