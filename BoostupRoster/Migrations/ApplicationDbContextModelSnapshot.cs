@@ -99,6 +99,61 @@ namespace Boostup.API.Migrations
                     b.ToTable("EmployeeDetail");
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.JobEmployee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("JobEmployee");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.Jobs", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EndTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StartTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Jobs");
+                });
+
             modelBuilder.Entity("Boostup.API.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -315,6 +370,25 @@ namespace Boostup.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.JobEmployee", b =>
+                {
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
+                        .WithMany("JobEmployee")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Boostup.API.Entities.Jobs", "Job")
+                        .WithMany("JobEmployee")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Job");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -364,6 +438,16 @@ namespace Boostup.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
+                {
+                    b.Navigation("JobEmployee");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.Jobs", b =>
+                {
+                    b.Navigation("JobEmployee");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.User", b =>

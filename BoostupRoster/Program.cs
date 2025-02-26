@@ -55,6 +55,7 @@ if (args.Contains("seed"))
         dbContext.Database.Migrate();
         await SeedData.SeedRoles(dbContext);
         await SeedData.SeedUser(services , dbContext);
+        await SeedData.SeedJobs(dbContext);
     }
 
     Console.WriteLine("Database seeding completed.");

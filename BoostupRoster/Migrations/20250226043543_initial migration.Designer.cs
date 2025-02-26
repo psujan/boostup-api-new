@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250221214954_update employee detail")]
-    partial class updateemployeedetail
+    [Migration("20250226043543_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace Boostup.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1000L);
 
                     b.Property<string>("ABN")
                         .HasColumnType("nvarchar(max)");
@@ -100,6 +100,61 @@ namespace Boostup.API.Migrations
                         .IsUnique();
 
                     b.ToTable("EmployeeDetail");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.JobEmployee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("JobEmployee");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.Jobs", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EndTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StartTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.User", b =>
@@ -318,6 +373,25 @@ namespace Boostup.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.JobEmployee", b =>
+                {
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
+                        .WithMany("JobEmployee")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Boostup.API.Entities.Jobs", "Job")
+                        .WithMany("JobEmployee")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Job");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -367,6 +441,16 @@ namespace Boostup.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
+                {
+                    b.Navigation("JobEmployee");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.Jobs", b =>
+                {
+                    b.Navigation("JobEmployee");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.User", b =>

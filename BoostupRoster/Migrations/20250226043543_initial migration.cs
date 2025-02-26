@@ -31,8 +31,6 @@ namespace Boostup.API.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Contact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -52,6 +50,24 @@ namespace Boostup.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Jobs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EndTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -165,12 +181,15 @@ namespace Boostup.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:Identity", "1000, 1"),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Contact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeeCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmergencyContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmergencyContactName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BirthCountry = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DOB = table.Column<DateOnly>(type: "date", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsTaxFree = table.Column<bool>(type: "bit", nullable: false),
                     BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -180,7 +199,9 @@ namespace Boostup.API.Migrations
                     JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EmploymentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -189,6 +210,32 @@ namespace Boostup.API.Migrations
                         name: "FK_EmployeeDetail_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobEmployee",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobId = table.Column<int>(type: "int", nullable: false),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobEmployee", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobEmployee_EmployeeDetail_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobEmployee_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Jobs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -237,6 +284,16 @@ namespace Boostup.API.Migrations
                 table: "EmployeeDetail",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobEmployee_EmployeeId",
+                table: "JobEmployee",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobEmployee_JobId",
+                table: "JobEmployee",
+                column: "JobId");
         }
 
         /// <inheritdoc />
@@ -258,10 +315,16 @@ namespace Boostup.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "EmployeeDetail");
+                name: "JobEmployee");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeDetail");
+
+            migrationBuilder.DropTable(
+                name: "Jobs");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

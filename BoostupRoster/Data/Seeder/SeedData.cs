@@ -97,5 +97,57 @@ namespace Boostup.API.Data.Seeder
                 Console.WriteLine("User Seeding Completed");
             }
         }
+
+        public  async static Task SeedJobs(ApplicationDbContext dbContext)
+        {
+            if (!dbContext.Jobs.Any())
+            {
+                var jobs = new List<Jobs>()
+                {
+                    new Jobs()
+                    {
+                        Title = "Pool Cleaning - Macquire Park",
+                        StartTime = "6:00 AM",
+                        EndTime = "10:00 AM",
+
+                    },
+                    new Jobs()
+                    {
+                        Title = "Bar Cleaning - Wynard",
+                        StartTime = "6:00 AM",
+                        EndTime = "11:00 AM",
+                    },
+                    new Jobs()
+                    {
+                        Title =  "Office Cleaning - Chatswood",
+                        StartTime = "7:00 PM",
+                        EndTime = "11:30 PM",
+                    },
+                    new Jobs()
+                    {
+                        Title = "Warehouse Cleaning Manly - Morning",
+                        StartTime = "6:00 AM",
+                        EndTime = "2: 00 PM",
+                    },
+                    new Jobs()
+                    {
+                        Title = "Warehouse Cleaning Manly - Afternoon",
+                        StartTime = "2:00 PM",
+                        EndTime = "10: 00 PM",
+                    },
+                    new Jobs()
+                    {
+                        Title = "Warehouse Cleaning Manly - Night",
+                        StartTime = "10:00 PM",
+                        EndTime = "6: 00 AM",
+                    }
+                };
+                dbContext.Jobs.AddRange(jobs);
+                await dbContext.SaveChangesAsync();
+                Console.WriteLine("Jobs Seeding Completed");
+            }
+            
+        }
     }
 }
+       

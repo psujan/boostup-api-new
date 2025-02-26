@@ -23,5 +23,7 @@ namespace Boostup.API.Entities
         public string? Notes {  get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+        //public ICollection<Jobs>? Jobs { get; set; }
+        public ICollection<JobEmployee>? JobEmployee { get; set;}
     }
 }
