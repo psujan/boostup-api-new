@@ -65,5 +65,3 @@ if (args.Contains("seed"))
 app.Run();
 
 Log.CloseAndFlush();
-
-

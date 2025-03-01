@@ -3,9 +3,11 @@ using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Interfaces.Auth;
 using Boostup.API.Interfaces.Employee;
+using Boostup.API.Interfaces.Roster;
 using Boostup.API.Mapper;
 using Boostup.API.Repositories.Auth;
 using Boostup.API.Repositories.Employee;
+using Boostup.API.Repositories.Roster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -87,6 +89,7 @@ namespace Boostup.API.Services
             services.AddScoped<IUserManagerRepository, UserManagerRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IRosterRepository, RosterRepository>();
             return services;
         }
     }

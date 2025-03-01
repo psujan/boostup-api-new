@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
@@ -24,17 +25,20 @@ namespace Boostup.API.Controllers.Admin
         private readonly IUserManagerRepository userManagerRepository;
         private readonly IMapper mapper;
         private readonly IEmployeeRepository employeeRepository;
+        private readonly ApplicationDbContext dbContext;
 
         public EmployeeController(ILogger<EmployeeController> logger , 
             IUserManagerRepository userManagerRepository , 
             IMapper mapper,
-            IEmployeeRepository employeeRepository
+            IEmployeeRepository employeeRepository,
+            ApplicationDbContext dbContext
         )
         {
             this.logger = logger;
             this.userManagerRepository = userManagerRepository;
             this.mapper = mapper;
             this.employeeRepository = employeeRepository;
+            this.dbContext = dbContext;
         }
 
         [MapToApiVersion(1)]
