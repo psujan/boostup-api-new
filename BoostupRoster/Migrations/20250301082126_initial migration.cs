@@ -240,6 +240,38 @@ namespace Boostup.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Roster",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EndTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkHours = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JobId = table.Column<int>(type: "int", nullable: true),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roster", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Roster_EmployeeDetail_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Roster_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -294,6 +326,16 @@ namespace Boostup.API.Migrations
                 name: "IX_JobEmployee_JobId",
                 table: "JobEmployee",
                 column: "JobId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roster_EmployeeId",
+                table: "Roster",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roster_JobId",
+                table: "Roster",
+                column: "JobId");
         }
 
         /// <inheritdoc />
@@ -316,6 +358,9 @@ namespace Boostup.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "JobEmployee");
+
+            migrationBuilder.DropTable(
+                name: "Roster");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

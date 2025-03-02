@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250227102735_Roster Model")]
-    partial class RosterModel
+    [Migration("20250301082126_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,6 +171,9 @@ namespace Boostup.API.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("EndTime")
                         .HasColumnType("nvarchar(max)");
 
@@ -191,32 +194,11 @@ namespace Boostup.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmployeeId");
+
                     b.HasIndex("JobId");
 
                     b.ToTable("Roster");
-                });
-
-            modelBuilder.Entity("Boostup.API.Entities.RosterEmployee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RosterId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("RosterId");
-
-                    b.ToTable("RosterEmployee");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.User", b =>
@@ -456,30 +438,19 @@ namespace Boostup.API.Migrations
 
             modelBuilder.Entity("Boostup.API.Entities.Roster", b =>
                 {
-                    b.HasOne("Boostup.API.Entities.Jobs", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId");
-
-                    b.Navigation("Job");
-                });
-
-            modelBuilder.Entity("Boostup.API.Entities.RosterEmployee", b =>
-                {
                     b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
                         .WithMany("Rosters")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Boostup.API.Entities.Roster", "Roster")
-                        .WithMany("Employees")
-                        .HasForeignKey("RosterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Boostup.API.Entities.Jobs", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId");
 
                     b.Navigation("Employee");
 
-                    b.Navigation("Roster");
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -543,11 +514,6 @@ namespace Boostup.API.Migrations
             modelBuilder.Entity("Boostup.API.Entities.Jobs", b =>
                 {
                     b.Navigation("JobEmployee");
-                });
-
-            modelBuilder.Entity("Boostup.API.Entities.Roster", b =>
-                {
-                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.User", b =>

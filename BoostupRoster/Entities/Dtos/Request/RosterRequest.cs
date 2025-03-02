@@ -8,6 +8,6 @@
         public int JobId { get; set; }
         public string? Notes { get; set; }
         public int EmployeeId { get; set; }
-        public DateOnly Date { get; set; }
+        public string Date { get; set; }
     }
 }

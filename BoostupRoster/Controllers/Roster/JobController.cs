@@ -5,7 +5,7 @@ namespace Boostup.API.Controllers.Roster
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventController : ControllerBase
+    public class JobController : ControllerBase
     {
     }
 }

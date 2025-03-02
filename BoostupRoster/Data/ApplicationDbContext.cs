@@ -13,7 +13,6 @@ namespace Boostup.API.Data
         public DbSet<Jobs> Jobs { get; set; }
         public DbSet<JobEmployee> JobEmployee { get; set; }
         public DbSet<Roster> Roster { get; set; }
-        public DbSet<RosterEmployee> RosterEmployee { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
@@ -36,18 +35,18 @@ namespace Boostup.API.Data
             modelBuilder.Entity<JobEmployee>()
                 .HasOne(je => je.Employee)
                 .WithMany(e => e.JobEmployee)
-                .HasForeignKey(je => je.EmployeeId);
-
-            modelBuilder.Entity<RosterEmployee>()
-                .HasOne(re => re.Roster)
-                .WithMany(r => r.Employees)
-                .HasForeignKey(re => re.RosterId);
-
-            modelBuilder.Entity<RosterEmployee>()
-                .HasOne(re => re.Employee)
+                .HasForeignKey(je => je.EmployeeId);  
+            
+            modelBuilder.Entity<Roster>()
+                .HasOne(r => r.Employee)
                 .WithMany(e => e.Rosters)
-                .HasForeignKey(re => re.EmployeeId);
-             
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmployeeDetail>()
+                .HasMany(e => e.Rosters)
+                .WithOne(r  => r.Employee)
+                .OnDelete(DeleteBehavior.Cascade);
+          
         }
     }
 }

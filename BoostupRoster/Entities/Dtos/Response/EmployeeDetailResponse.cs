@@ -1,6 +1,6 @@
 ﻿namespace Boostup.API.Entities.Dtos.Response
 {
-    public class EmployeeDetailResponse
+    public class EmployeeDetailResponse:Base
     {
         public string? Address { get; set; }
         public string? Contact { get; set; }

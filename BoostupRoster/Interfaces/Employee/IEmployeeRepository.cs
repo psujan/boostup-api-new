@@ -8,7 +8,6 @@ namespace Boostup.API.Interfaces.Employee
     {
         Task<EmployeeDetailResponse?> AddEmployee(User user, string? phone);
         Task<EmployeeDetailResponse?> GetById(int id);
-
         Task<PaginatedResponse<EmployeeDetailResponse?>> GetPaginated(int pageNo, int pageSize);
 
     }

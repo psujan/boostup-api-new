@@ -1,17 +1,39 @@
-﻿using Boostup.API.Data;
+﻿using AutoMapper;
+using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces.Roster;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boostup.API.Repositories.Roster
 {
     public class RosterRepository : IRosterRepository
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IMapper mapper;
 
-        public RosterRepository(ApplicationDbContext dbContext)
+        public RosterRepository(ApplicationDbContext dbContext , IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
+        }
+
+        public async Task<IEnumerable<EmployeeWithRosterResponse>?> ListRoster(RosterFilterRequest request)
+        {
+            var startDate = DateOnly.Parse(request.From);
+            var endDate = DateOnly.Parse(request.To);
+            // var rows = await dbContext.EmployeeDetail.Where(emp => request.EmployeeIds.Contains(emp.Id)).ToListAsync();
+            var rows = await dbContext.EmployeeDetail
+                .Where(emp => request.EmployeeIds.Contains(emp.Id))
+                .Include(emp => emp.User)
+                .Include(emp => emp.Rosters.Where(
+                    roster => roster.Date <= endDate && roster.Date >= startDate))
+                .ThenInclude(roster => roster.Job)
+                .AsNoTracking()
+                .ToListAsync();
+            var mappedData = mapper.Map<IEnumerable<EmployeeWithRosterResponse>>(rows);
+            return mappedData;
         }
 
         public async Task<List<Entities.Roster>> AddRoster(List<RosterRequest> request)
@@ -21,13 +43,15 @@ namespace Boostup.API.Repositories.Roster
             {
                 var rosterRow = new Entities.Roster()
                 {
-                    Date = request[i].Date,
+                    Date = DateOnly.Parse(request[i].Date),
                     WorkHours = request[i].WorkHours,
                     StartTime = request[i].StartTime,
                     EndTime = request[i].EndTime,
                     JobId = request[i].JobId,
                     EmployeeId = request[i].EmployeeId,
                     Notes = request[i].Notes,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
                 };
                 dbContext.Roster.Add(rosterRow);
                 await dbContext.SaveChangesAsync();
