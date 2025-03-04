@@ -90,6 +90,7 @@ namespace Boostup.API.Services
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IRosterRepository, RosterRepository>();
+            services.AddScoped<IJobRepository, JobRepository>();
             return services;
         }
     }
