@@ -1,17 +1,22 @@
-﻿using Boostup.API.Data;
+﻿using AutoMapper;
+using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces.Roster;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boostup.API.Repositories.Roster
 {
     public class JobRepository:IJobRepository
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IMapper mapper;
 
-        public JobRepository(ApplicationDbContext dbContext)
+        public JobRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
         public async Task<List<JobEmployee>> AddEmployeeToJob(JobEmployeeRequest request)
@@ -41,9 +46,18 @@ namespace Boostup.API.Repositories.Roster
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<EmployeeDetail>?> ListEmployeeByJob(int JobId)
+        public async Task<IEnumerable<EmployeeBasicResponse>?> ListEmployeeByJob(int JobId)
         {
-            throw new NotImplementedException();
+            var rows =  await dbContext.Jobs.Where(job => job.Id == JobId)
+                .SelectMany(job => job.JobEmployee).
+                Select(je=> new EmployeeBasicResponse()
+                {
+                    EmployeeId = je.EmployeeId,
+                    EmployeeName = je.Employee.User.FullName
+                })
+                .ToListAsync();
+            //var mappedData = mapper.Map<IEnumerable<EmployeeBasicResponse>>(rows);
+            return rows;
         }
 
         public Task<Jobs?> UpdateJob(int JobId)

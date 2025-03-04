@@ -2,6 +2,7 @@
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces.Roster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +37,36 @@ namespace Boostup.API.Controllers.Roster
                 {
                     Success = true,
                     Message = "Employee Added To Job Successfully",
+                    Data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in adding employee to jobs " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet]
+        [Route("{id}/list-employees")]
+        public async Task<IActionResult> GetEmployeeeByJob([FromRoute] int Id)
+        {
+            try
+            {
+                var data = await jobRepository.ListEmployeeByJob(Id);
+                return Ok(new Entities.Common.ApiResponse<IEnumerable<EmployeeBasicResponse>?>()
+                {
+                    Success = true,
+                    Message = "Employee For The Requested Job Fetched Successfully",
                     Data = data
                 });
             }

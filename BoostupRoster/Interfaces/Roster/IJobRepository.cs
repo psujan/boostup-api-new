@@ -1,5 +1,6 @@
 ﻿using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 
 namespace Boostup.API.Interfaces.Roster
 {
@@ -9,6 +10,6 @@ namespace Boostup.API.Interfaces.Roster
         Task<Jobs?> AddJob();
         Task<Jobs?> UpdateJob(int JobId);
         Task<Jobs?> DeleteJob(int JobId);
-        Task<IEnumerable<EmployeeDetail>?> ListEmployeeByJob(int JobId);
+        Task<IEnumerable<EmployeeBasicResponse>?> ListEmployeeByJob(int JobId);
     }
 }
