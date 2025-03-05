@@ -13,6 +13,8 @@ namespace Boostup.API.Data
         public DbSet<Jobs> Jobs { get; set; }
         public DbSet<JobEmployee> JobEmployee { get; set; }
         public DbSet<Roster> Roster { get; set; }
+        public DbSet<LeaveType> LeaveType { get; set; }
+        public DbSet<Leave> Leave { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
@@ -46,6 +48,10 @@ namespace Boostup.API.Data
                 .HasMany(e => e.Rosters)
                 .WithOne(r  => r.Employee)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Leave>()
+                .HasOne(l => l.LeaveType)
+                .WithMany();
           
         }
     }

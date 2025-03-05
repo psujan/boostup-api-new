@@ -26,5 +26,6 @@ namespace Boostup.API.Entities
         //public ICollection<Jobs>? Jobs { get; set; }
         public ICollection<JobEmployee>? JobEmployee { get; set;}
         public ICollection<Roster>? Rosters { get; set;}
+        public ICollection<Leave>? Leaves { get; set; }
     }
 }

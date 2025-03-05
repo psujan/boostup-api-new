@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
 
-namespace Boostup.API.Controllers.Admin
+namespace Boostup.API.Controllers
 {
     [ApiVersion(1)]
     [Route("api/v{v:apiVersion}/[controller]")]
@@ -27,8 +27,8 @@ namespace Boostup.API.Controllers.Admin
         private readonly IEmployeeRepository employeeRepository;
         private readonly ApplicationDbContext dbContext;
 
-        public EmployeeController(ILogger<EmployeeController> logger , 
-            IUserManagerRepository userManagerRepository , 
+        public EmployeeController(ILogger<EmployeeController> logger,
+            IUserManagerRepository userManagerRepository,
             IMapper mapper,
             IEmployeeRepository employeeRepository,
             ApplicationDbContext dbContext
@@ -70,11 +70,13 @@ namespace Boostup.API.Controllers.Admin
                 return Ok(new ApiResponse<EmployeeDetailResponse>()
                 {
                     Success = true,
-                    Message = "Employee " + user.FullName +" is successfully onboarded",
-                    Data =  employee
+                    Message = "Employee " + user.FullName + " is successfully onboarded",
+                    Data = employee
                 });
 
-            }catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogError("Exception occured in onboarding " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
@@ -106,7 +108,7 @@ namespace Boostup.API.Controllers.Admin
             }
             catch (Exception ex)
             {
-                
+
                 logger.LogError("Exception occured in fetching detail " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
@@ -117,7 +119,7 @@ namespace Boostup.API.Controllers.Admin
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
-                
+
             }
         }
 
@@ -125,7 +127,7 @@ namespace Boostup.API.Controllers.Admin
         [HttpGet]
         [Route("paginated")]
         [Authorize(Roles = "SuperAdmin")]
-        public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber , int pageSize)
+        public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber, int pageSize)
         {
             try
             {
@@ -134,10 +136,11 @@ namespace Boostup.API.Controllers.Admin
                 {
                     Success = true,
                     Message = "Data Fetched Successfully",
-                    Data =  data
+                    Data = data
                 });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 logger.LogError("Exception occured in fetching paginated data " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {

@@ -91,6 +91,7 @@ namespace Boostup.API.Services
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IRosterRepository, RosterRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
+            services.AddScoped<ILeaveRepository, LeaveRepository>();
             return services;
         }
     }

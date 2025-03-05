@@ -148,6 +148,44 @@ namespace Boostup.API.Data.Seeder
             }
             
         }
+
+        public async static Task SeedLeaveTypes(ApplicationDbContext dbContext)
+        {
+            if (!dbContext.LeaveType.Any())
+            {
+                var leaves = new List<LeaveType>
+                {
+                    new LeaveType()
+                    {
+                        Title="Sick Leave",
+                        Days= 10,
+                    },
+                    new LeaveType()
+                    {
+                        Title="Annual Leave",
+                        Days= 10,
+                    },
+                    new LeaveType()
+                    {
+                        Title="Parental Leave",
+                        Days= 30,
+                    },
+                    new LeaveType()
+                    {
+                        Title="Long Service Leave",
+                        Days= 30,
+                    },
+                    new LeaveType()
+                    {
+                        Title="Unpaid Leave",
+                        Days= 30,
+                    },
+                };
+
+                await dbContext.LeaveType.AddRangeAsync(leaves);
+                dbContext.SaveChanges();
+            }
+        }
     }
 }
        
