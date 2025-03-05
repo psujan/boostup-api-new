@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Azure.Core;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
@@ -53,6 +54,37 @@ namespace Boostup.API.Controllers
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
             }
+        }
+
+        [Authorize (Roles ="SuperAdmin")]
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> RemoveLeave([FromRoute]int Id)
+        {
+            try
+            {
+                var data = await leaveRepository.RemoveLeave(Id);
+                return Ok(new Entities.Common.ApiResponse<Leave?>()
+                {
+                    Success = true,
+                    Message = "Leave Request Deleted Successfully",
+                    Data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleting leave request " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+
         }
     }
 }
