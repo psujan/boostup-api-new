@@ -15,7 +15,12 @@ namespace Boostup.API.Mapper
                 .ForMember(dest => dest.Job , opt=> opt.MapFrom(src => src.Job));
             CreateMap<EmployeeDetail, EmployeeWithRosterResponse>()
                 .ForMember(dest => dest.RosterItems, opt => opt.MapFrom(src => src.Rosters));
-            CreateMap<EmployeeDetail, EmployeeBasicResponse>();
+            CreateMap<EmployeeDetail, EmployeeBasicResponse>()
+                .ForMember(dest => dest.EmployeeId , opt => opt.MapFrom(src => src.Id))
+                 .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.User.FullName));
+            CreateMap<Leave, LeaveResponse>()
+                .ForMember(dest => dest.Employee , opt => opt.MapFrom(src => src.Employee))
+                .ForMember(dest => dest.LeaveType , opt => opt.MapFrom(src => src.LeaveType));
         }
     }
 }
