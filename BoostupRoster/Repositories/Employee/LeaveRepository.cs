@@ -72,7 +72,7 @@ namespace Boostup.API.Repositories.Employee
 
             if(!request.IsAllLeaveType)
             {
-                query = query.Where(l => leaveIds.Contains((int)l.LeaveTypeId));
+                query = query.Where(l => leaveIds.Contains(l.LeaveTypeId != null ? (int)l.LeaveTypeId: -1));
             }
 
             if(request.Year != null)
@@ -110,6 +110,27 @@ namespace Boostup.API.Repositories.Employee
 
             var mappedData = mapper.Map<LeaveResponse>(data);
             return mappedData;
+        }
+
+        public async Task<LeaveResponse?> UpdateLeave(int Id, LeaveUpdateRequest request)
+        {
+            var leave = await dbContext.Leave.FindAsync(Id);
+            if (leave == null)
+            {
+                throw new Exception("Leave Request Not Found");
+            }
+
+            leave.ForSingleDay = request.ForSingleDay;
+            leave.Status = request.Status;
+            leave.EmployeeId = request.EmployeeId;
+            leave.From = request.From;
+            leave.To = request.To;
+            leave.RejectReason = request.RejectReason;
+            leave.IsPaidLeave = request.IsPaidLeave;
+            leave.Notes = request.Notes;
+            leave.LeaveTypeId = request.LeaveTypeId;
+            await dbContext.SaveChangesAsync();
+            return mapper.Map<LeaveResponse>(leave);
         }
     }
 }

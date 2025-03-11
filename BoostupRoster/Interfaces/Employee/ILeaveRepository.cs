@@ -10,7 +10,7 @@ namespace Boostup.API.Interfaces.Employee
         Task<Leave> AddLeave(LeaveRequest request);
         Task<Leave?> RemoveLeave(int Id);
         Task<LeaveResponse?> GetLeaveById(int Id);
-
         Task<PaginatedResponse<LeaveResponse?>> GetLeave(LeaveFilterRequest request);
+        Task<LeaveResponse?> UpdateLeave(int Id, LeaveUpdateRequest request);
     }
 }
