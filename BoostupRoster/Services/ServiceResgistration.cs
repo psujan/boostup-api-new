@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 using Boostup.API.Data;
 using Boostup.API.Entities;
+using Boostup.API.Interfaces;
 using Boostup.API.Interfaces.Auth;
 using Boostup.API.Interfaces.Employee;
 using Boostup.API.Interfaces.Roster;
 using Boostup.API.Mapper;
+using Boostup.API.Repositories;
 using Boostup.API.Repositories.Auth;
 using Boostup.API.Repositories.Employee;
 using Boostup.API.Repositories.Roster;
@@ -92,6 +94,7 @@ namespace Boostup.API.Services
             services.AddScoped<IRosterRepository, RosterRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped<ILeaveRepository, LeaveRepository>();
+            services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             return services;
         }
     }
