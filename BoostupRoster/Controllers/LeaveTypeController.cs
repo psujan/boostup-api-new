@@ -27,7 +27,7 @@ namespace Boostup.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize (Roles ="SuperAdmin , Employee")]
         public async Task<IActionResult> GetList()
         {
             try

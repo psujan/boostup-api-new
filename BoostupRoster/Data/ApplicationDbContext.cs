@@ -56,7 +56,11 @@ namespace Boostup.API.Data
             modelBuilder.Entity<Leave>()
                 .HasOne(l => l.Employee)
                 .WithMany();
-          
+
+            modelBuilder.Entity<EmployeeAvailability>()
+                .HasOne(a => a.EmployeeDetail)
+                .WithMany(emp => emp.Availabilities)
+                .HasForeignKey(a => a.EmployeeId);
         }
     }
 }

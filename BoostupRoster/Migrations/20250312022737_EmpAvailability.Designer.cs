@@ -4,6 +4,7 @@ using Boostup.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250312022737_EmpAvailability")]
+    partial class EmpAvailability
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +40,9 @@ namespace Boostup.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EmployeeDetailId")
+                        .HasColumnType("int");
+
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
@@ -56,7 +62,7 @@ namespace Boostup.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeDetailId");
 
                     b.ToTable("EmployeeAvailability");
                 });
@@ -531,7 +537,7 @@ namespace Boostup.API.Migrations
                 {
                     b.HasOne("Boostup.API.Entities.EmployeeDetail", "EmployeeDetail")
                         .WithMany("Availabilities")
-                        .HasForeignKey("EmployeeId")
+                        .HasForeignKey("EmployeeDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

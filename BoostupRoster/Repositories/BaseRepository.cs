@@ -17,7 +17,6 @@ namespace Boostup.API.Repositories
            dbContext.Set<T>().Add(t);
            await dbContext.SaveChangesAsync();
            return t;
-
         }
 
         public virtual async Task<T?> Delete(int id)
@@ -37,14 +36,21 @@ namespace Boostup.API.Repositories
             return await dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
 
+        public virtual async Task<T?> Update(int id , T updatedT)
+        {
+            T t= await dbContext.Set<T>().FindAsync(id) ?? throw new Exception("Record Not Found");
+            t = updatedT;
+            await dbContext.SaveChangesAsync();
+            return t;
+        }
+
         public virtual async Task<T?> GetById(int id)
         {
            return await dbContext.Set<T>().FindAsync(id);
         }
-
-        //public Task<T?> Update(int id, T t)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public virtual async Task<IEnumerable<T>?> GetPaginated(int pageNumber , int pageSize)
+        {
+           return await dbContext.Set<T>().Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
+        }
     }
 }
