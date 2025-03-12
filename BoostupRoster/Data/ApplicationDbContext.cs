@@ -15,6 +15,7 @@ namespace Boostup.API.Data
         public DbSet<Roster> Roster { get; set; }
         public DbSet<LeaveType> LeaveType { get; set; }
         public DbSet<Leave> Leave { get; set; }
+        public DbSet<EmployeeAvailability> EmployeeAvailability { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions)
         {
 

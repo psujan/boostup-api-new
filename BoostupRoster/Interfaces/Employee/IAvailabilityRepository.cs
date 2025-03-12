@@ -1,4 +1,5 @@
 ﻿using Boostup.API.Entities;
+using Boostup.API.Entities.Dtos.Request;
 
 namespace Boostup.API.Interfaces.Employee
 {
@@ -6,6 +7,6 @@ namespace Boostup.API.Interfaces.Employee
     {
         Task<EmployeeAvailability?> Add(EmployeeAvailability availability);
         Task<EmployeeAvailability?> Delete(int id);
-        Task<EmployeeAvailability?> Update(int id , EmployeeAvailability availability);
+        Task<EmployeeAvailability?> Update(int id, AvailabilityRequest request);
     }
 }

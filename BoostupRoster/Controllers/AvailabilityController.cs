@@ -39,23 +39,7 @@ namespace Boostup.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(AvailabilityRequest request) 
         {
-            var row = await availabilityRepository.Add(new EmployeeAvailability()
-            {
-                EmployeeId = request.EmployeeId,
-                ForFullDay = request.ForFullDay,
-                From = request.From,
-                To = request.To,
-                Day = request.Day,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-            });
-            return Ok(new ApiResponse<EmployeeAvailability?>()
-            {
-                Success = true,
-                Data = row,
-                Message = "Availability Added Successfully"
-            });
-            /*try
+            try
             {
                 var row = await availabilityRepository.Add(new EmployeeAvailability()
                 {
@@ -63,6 +47,9 @@ namespace Boostup.API.Controllers
                     ForFullDay = request.ForFullDay,
                     From = request.From,
                     To = request.To,
+                    Day = request.Day,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
                 });
                 return Ok(new ApiResponse<EmployeeAvailability?>()
                 {
@@ -83,7 +70,37 @@ namespace Boostup.API.Controllers
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
-            }*/
+            }
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id , [FromBody] AvailabilityRequest request)
+        {
+            try
+            {
+                var row = await availabilityRepository.Update(id, request);
+                return Ok(new ApiResponse<EmployeeAvailability?>()
+                {
+                    Success = true,
+                    Data = row,
+                    Message = "Availability Updated Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in fetching paginated data " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
         }
     }
 }

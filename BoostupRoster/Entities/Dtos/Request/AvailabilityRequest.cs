@@ -6,16 +6,10 @@ namespace Boostup.API.Entities.Dtos.Request
     {
         [Required]
         public int EmployeeId { get; set; }
-
         [Required]
         public string Day { get; set; }
-
-        [Required]
-        public string From { get; set; }
-
-        [Required]
-        public string To { get; set; }
-
+        public string? From { get; set; }
+        public string? To { get; set; }
         [Required]
         public bool ForFullDay { get; set; }
     }

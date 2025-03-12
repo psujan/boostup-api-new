@@ -6,7 +6,7 @@ namespace Boostup.API.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly ApplicationDbContext dbContext;
+        protected readonly ApplicationDbContext dbContext;
 
         public BaseRepository(ApplicationDbContext dbContext)
         {
@@ -18,7 +18,6 @@ namespace Boostup.API.Repositories
            await dbContext.SaveChangesAsync();
            return t;
         }
-
         public virtual async Task<T?> Delete(int id)
         {
             var row = await dbContext.Set<T>().FindAsync(id);
@@ -30,18 +29,16 @@ namespace Boostup.API.Repositories
             await dbContext.SaveChangesAsync();
             return row;
         }
-
         public virtual async Task<IEnumerable<T>> GetAll()
         {
             return await dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
 
+        // Implement Update in Derived Class
+        // To Handle ForeignKey and Other Properties Modification If Needed
         public virtual async Task<T?> Update(int id , T updatedT)
         {
-            T t= await dbContext.Set<T>().FindAsync(id) ?? throw new Exception("Record Not Found");
-            t = updatedT;
-            await dbContext.SaveChangesAsync();
-            return t;
+           throw new NotImplementedException();
         }
 
         public virtual async Task<T?> GetById(int id)
