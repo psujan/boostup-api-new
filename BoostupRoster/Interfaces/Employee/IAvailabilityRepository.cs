@@ -8,5 +8,6 @@ namespace Boostup.API.Interfaces.Employee
         Task<EmployeeAvailability?> Add(EmployeeAvailability availability);
         Task<EmployeeAvailability?> Delete(int id);
         Task<EmployeeAvailability?> Update(int id, AvailabilityRequest request);
+        Task<IEnumerable<EmployeeAvailability>?> GetEmployeeAvailability(int EmpId);
     }
 }

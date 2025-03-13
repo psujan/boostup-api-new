@@ -13,7 +13,6 @@ namespace Boostup.API.Repositories.Employee
 
         public async Task<EmployeeAvailability?> Update(int id, AvailabilityRequest request)
         {
-            
             var row = await dbContext.EmployeeAvailability.FindAsync(id);
             if(row ==  null)
             {
@@ -26,6 +25,11 @@ namespace Boostup.API.Repositories.Employee
             row.EmployeeId = request.EmployeeId;
             await dbContext.SaveChangesAsync();
             return row;
+        }
+
+        public async Task<IEnumerable<EmployeeAvailability>?> GetEmployeeAvailability(int EmpId)
+        {
+            return await dbContext.EmployeeAvailability.Where(x => x.EmployeeId == EmpId).ToListAsync();
         }
     }
 }

@@ -27,13 +27,6 @@ namespace Boostup.API.Controllers
         }
        
 
-        // GET api/<AvailabilityController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<AvailabilityController>
         [Authorize]
         [HttpPost]
@@ -60,7 +53,7 @@ namespace Boostup.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Exception occured in fetching paginated data " + ex.Message);
+                logger.LogError("Exception occured in adding availability" + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
                     Success = false,
@@ -90,7 +83,65 @@ namespace Boostup.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Exception occured in fetching paginated data " + ex.Message);
+                logger.LogError("Exception occured in updating availability" + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                var row = await availabilityRepository.Delete(id);
+                return Ok(new ApiResponse<EmployeeAvailability?>()
+                {
+                    Success = true,
+                    Data = row,
+                    Message = "Availability Deleted Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleting availability " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [HttpGet]
+        [Route("employee/{id}")]
+        public async Task<IActionResult> GetEmployeeAvailability([FromRoute] int id)
+        {
+            try
+            {
+                var rows = await availabilityRepository.GetEmployeeAvailability(id);
+                return Ok(new ApiResponse<IEnumerable<EmployeeAvailability>?>()
+                {
+                    Success = true,
+                    Data = rows,
+                    Message = "Availability Fetched Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in fetching employee availability " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
                     Success = false,
