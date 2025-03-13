@@ -3,19 +3,17 @@ using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
-using Boostup.API.Interfaces.Roster;
+using Boostup.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Boostup.API.Repositories.Roster
+namespace Boostup.API.Repositories
 {
-    public class JobRepository:IJobRepository
+    public class JobRepository : BaseRepository<Jobs> , IJobRepository
     {
-        private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public JobRepository(ApplicationDbContext dbContext, IMapper mapper)
+        public JobRepository(ApplicationDbContext dbContext, IMapper mapper):base(dbContext)
         {
-            this.dbContext = dbContext;
             this.mapper = mapper;
         }
 
@@ -24,7 +22,7 @@ namespace Boostup.API.Repositories.Roster
             List<JobEmployee> jobEmployees = new List<JobEmployee>();
             for (int i = 0; i < request.EmployeeIds.Length; i++)
             {
-                var jobEmployee = new Entities.JobEmployee()
+                var jobEmployee = new JobEmployee()
                 {
                     EmployeeId = request.EmployeeIds[i],
                     JobId = request.JobId
@@ -48,9 +46,9 @@ namespace Boostup.API.Repositories.Roster
 
         public async Task<IEnumerable<EmployeeBasicResponse>?> ListEmployeeByJob(int JobId)
         {
-            var rows =  await dbContext.Jobs.Where(job => job.Id == JobId)
+            var rows = await dbContext.Jobs.Where(job => job.Id == JobId)
                 .SelectMany(job => job.JobEmployee).
-                Select(je=> new EmployeeBasicResponse()
+                Select(je => new EmployeeBasicResponse()
                 {
                     EmployeeId = je.EmployeeId,
                     EmployeeName = je.Employee.User.FullName

@@ -2,8 +2,8 @@
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
-using Boostup.API.Interfaces.Employee;
-using Boostup.API.Repositories.Employee;
+using Boostup.API.Interfaces;
+//using Boostup.API.Repositories.Employee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

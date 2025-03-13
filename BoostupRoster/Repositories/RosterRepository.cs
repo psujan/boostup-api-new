@@ -3,17 +3,17 @@ using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
-using Boostup.API.Interfaces.Roster;
+using Boostup.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Boostup.API.Repositories.Roster
+namespace Boostup.API.Repositories
 {
     public class RosterRepository : IRosterRepository
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public RosterRepository(ApplicationDbContext dbContext , IMapper mapper)
+        public RosterRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -36,12 +36,12 @@ namespace Boostup.API.Repositories.Roster
             return mappedData;
         }
 
-        public async Task<List<Entities.Roster>> AddRoster(List<RosterRequest> request)
+        public async Task<List<Roster>> AddRoster(List<RosterRequest> request)
         {
-            var roster = new List<Boostup.API.Entities.Roster>();
+            var roster = new List<Roster>();
             for (int i = 0; i < request.Count; i++)
             {
-                var rosterRow = new Entities.Roster()
+                var rosterRow = new Roster()
                 {
                     Date = DateOnly.Parse(request[i].Date),
                     WorkHours = request[i].WorkHours,
@@ -60,7 +60,7 @@ namespace Boostup.API.Repositories.Roster
             return roster;
         }
 
-        public async Task<Entities.Roster> DeleteRoster(int Id)
+        public async Task<Roster> DeleteRoster(int Id)
         {
             var roster = await dbContext.Roster.FindAsync(Id);
             if (roster == null)

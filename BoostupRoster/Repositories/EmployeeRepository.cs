@@ -3,17 +3,17 @@ using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Response;
-using Boostup.API.Interfaces.Employee;
+using Boostup.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Boostup.API.Repositories.Employee
+namespace Boostup.API.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public EmployeeRepository(ApplicationDbContext dbContext , IMapper mapper)
+        public EmployeeRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;

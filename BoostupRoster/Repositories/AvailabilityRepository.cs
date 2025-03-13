@@ -1,20 +1,21 @@
 ﻿using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
-using Boostup.API.Interfaces.Employee;
+using Boostup.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Boostup.API.Repositories.Employee
+namespace Boostup.API.Repositories
 {
-    public class AvailabilityRepository : BaseRepository<EmployeeAvailability> , IAvailabilityRepository
+    public class AvailabilityRepository : BaseRepository<EmployeeAvailability>, IAvailabilityRepository
     {
-        public AvailabilityRepository(ApplicationDbContext dbContext):base(dbContext) { 
+        public AvailabilityRepository(ApplicationDbContext dbContext) : base(dbContext)
+        {
         }
 
         public async Task<EmployeeAvailability?> Update(int id, AvailabilityRequest request)
         {
             var row = await dbContext.EmployeeAvailability.FindAsync(id);
-            if(row ==  null)
+            if (row == null)
             {
                 throw new Exception("Row Not Found");
             }

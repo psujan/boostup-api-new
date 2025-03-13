@@ -6,12 +6,12 @@ using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 
-namespace Boostup.API.Interfaces.Roster
+namespace Boostup.API.Interfaces
 {
     public interface IRosterRepository
     {
-        Task<List<Boostup.API.Entities.Roster>> AddRoster(List<RosterRequest> request);
-        Task<Boostup.API.Entities.Roster> DeleteRoster(int Id);
+        Task<List<Roster>> AddRoster(List<RosterRequest> request);
+        Task<Roster> DeleteRoster(int Id);
         Task<IEnumerable<EmployeeWithRosterResponse>?> ListRoster(RosterFilterRequest request);
     }
 }

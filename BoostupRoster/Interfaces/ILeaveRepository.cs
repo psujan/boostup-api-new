@@ -3,7 +3,7 @@ using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 
-namespace Boostup.API.Interfaces.Employee
+namespace Boostup.API.Interfaces
 {
     public interface ILeaveRepository
     {

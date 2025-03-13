@@ -1,7 +1,7 @@
 ﻿using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
 
-namespace Boostup.API.Interfaces.Employee
+namespace Boostup.API.Interfaces
 {
     public interface IAvailabilityRepository
     {

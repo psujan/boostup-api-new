@@ -2,7 +2,7 @@
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 
-namespace Boostup.API.Interfaces.Roster
+namespace Boostup.API.Interfaces
 {
     public interface IJobRepository
     {

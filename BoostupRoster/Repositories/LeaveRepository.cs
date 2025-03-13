@@ -4,20 +4,20 @@ using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
-using Boostup.API.Interfaces.Employee;
+using Boostup.API.Interfaces;
 using Boostup.API.Migrations;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Boostup.API.Repositories.Employee
+namespace Boostup.API.Repositories
 {
-    public class LeaveRepository:ILeaveRepository
+    public class LeaveRepository : ILeaveRepository
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public LeaveRepository(ApplicationDbContext dbContext, IMapper mapper) 
+        public LeaveRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -33,7 +33,7 @@ namespace Boostup.API.Repositories.Employee
                 To = request.To,
                 IsPaidLeave = request.IsPaidLeave,
                 ForSingleDay = request.ForSingleDay,
-                CreatedAt   = DateTime.Now,
+                CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
             };
             dbContext.Leave.Add(leave);
@@ -62,20 +62,20 @@ namespace Boostup.API.Repositories.Employee
         public async Task<PaginatedResponse<LeaveResponse?>> GetLeave(LeaveFilterRequest request)
         {
             IQueryable<Leave> query = dbContext.Set<Leave>();
-            HashSet<int> leaveIds = new HashSet<int>(request.LeaveTypeIds ?? new int[] {0} );
-            HashSet<int> empIds = new HashSet<int>(request.EmployeeIds ?? new int[] {0});
+            HashSet<int> leaveIds = new HashSet<int>(request.LeaveTypeIds ?? new int[] { 0 });
+            HashSet<int> empIds = new HashSet<int>(request.EmployeeIds ?? new int[] { 0 });
 
-            if(!request.IsAllEmployee)
+            if (!request.IsAllEmployee)
             {
                 query = query.Where(leave => empIds.Contains(leave.EmployeeId));
             }
 
-            if(!request.IsAllLeaveType)
+            if (!request.IsAllLeaveType)
             {
-                query = query.Where(l => leaveIds.Contains(l.LeaveTypeId != null ? (int)l.LeaveTypeId: -1));
+                query = query.Where(l => leaveIds.Contains(l.LeaveTypeId != null ? (int)l.LeaveTypeId : -1));
             }
 
-            if(request.Year != null)
+            if (request.Year != null)
             {
                 query = query.Where(leave => leave.From.Year.ToString() == request.Year);
             }
@@ -103,7 +103,7 @@ namespace Boostup.API.Repositories.Employee
                             .ThenInclude(emp => emp.User)
                             .FirstOrDefaultAsync(x => x.Id == Id);
 
-            if(data == null)
+            if (data == null)
             {
                 throw new Exception("Leave Request Not Found");
             }
