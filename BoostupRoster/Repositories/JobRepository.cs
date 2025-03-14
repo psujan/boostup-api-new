@@ -34,16 +34,6 @@ namespace Boostup.API.Repositories
             return jobEmployees;
         }
 
-        public Task<Jobs?> AddJob()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Jobs?> DeleteJob(int JobId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<EmployeeBasicResponse>?> ListEmployeeByJob(int JobId)
         {
             var rows = await dbContext.Jobs.Where(job => job.Id == JobId)
@@ -58,7 +48,7 @@ namespace Boostup.API.Repositories
             return rows;
         }
 
-        public Task<Jobs?> UpdateJob(int JobId)
+        public Task<Jobs?> Update(int JobId)
         {
             throw new NotImplementedException();
         }

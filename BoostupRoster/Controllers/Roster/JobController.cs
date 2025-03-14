@@ -25,6 +25,7 @@ namespace Boostup.API.Controllers.Roster
             this.logger = logger;
         }
 
+
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [Route("add-employees")]
@@ -83,6 +84,103 @@ namespace Boostup.API.Controllers.Roster
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
             }
+        }
+
+        [Authorize (Roles ="SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] JobRequest request)
+        {
+            try
+            {
+                var row = await jobRepository.Add(new Jobs()
+                {
+                    Title = request.Title,
+                    StartTime = request.StartTime,
+                    EndTime = request.EndTime,
+                    Notes = request.Notes,
+                    JobAddress = request.JobAddress,
+                });
+                return Ok(new ApiResponse<Jobs>()
+                {
+                    Data = row,
+                    Message = "Job Added Successfully",
+                    Success = true
+                });
+            }
+            catch(Exception ex)
+            {
+                logger.LogError("Exception occured in adding job " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                var row = await jobRepository.Delete(id);
+                return Ok(new ApiResponse<Jobs>()
+                {
+                    Data = row,
+                    Message = "Job Deleted Successfully",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleteing job " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet]
+        [Route("get-paginated")]
+        public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber, int pageSize)
+        {
+
+             try
+             {
+                var rows = await jobRepository.GetPaginated(pageNumber, pageSize);
+                 return Ok(new ApiResponse<PaginatedResponse<Jobs>?>()
+                 {
+                     Data = rows,
+                     Message = "Jobs Fetched Successfully",
+                     Success = true
+                 });
+             }
+             catch (Exception ex)
+             {
+                 logger.LogError("Exception occured in deleteing job " + ex.Message);
+                 return new ObjectResult(new ApiResponse<string>()
+                 {
+                     Success = false,
+                     Message = ex.Message,
+                     Data = ""
+                 })
+                 {
+                     StatusCode = (int)HttpStatusCode.InternalServerError
+                 };
+             }
         }
     }
 }

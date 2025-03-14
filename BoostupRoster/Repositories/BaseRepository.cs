@@ -1,6 +1,10 @@
-﻿using Boostup.API.Data;
+﻿using AutoMapper;
+using Boostup.API.Data;
+using Boostup.API.Entities.Common;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Boostup.API.Repositories
 {
@@ -45,9 +49,14 @@ namespace Boostup.API.Repositories
         {
            return await dbContext.Set<T>().FindAsync(id);
         }
-        public virtual async Task<IEnumerable<T>?> GetPaginated(int pageNumber , int pageSize)
+        public virtual async Task<PaginatedResponse<T>?> GetPaginated(int pageNumber , int pageSize)
         {
-           return await dbContext.Set<T>().Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
+
+           var rows = await dbContext.Set<T>().Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
+           var totalCount = await dbContext.Set<T>().CountAsync();
+           var resultCount = rows.Count();
+           return new PaginatedResponse<T>(rows, totalCount, resultCount, pageNumber, pageSize);
+
         }
     }
 }
