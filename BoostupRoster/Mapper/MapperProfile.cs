@@ -22,5 +22,7 @@ namespace Boostup.API.Mapper
                 .ForMember(dest => dest.Employee , opt => opt.MapFrom(src => src.Employee))
                 .ForMember(dest => dest.LeaveType , opt => opt.MapFrom(src => src.LeaveType));
         }
+
+
     }
 }

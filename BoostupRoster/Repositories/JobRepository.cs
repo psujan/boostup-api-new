@@ -48,9 +48,21 @@ namespace Boostup.API.Repositories
             return rows;
         }
 
-        public Task<Jobs?> Update(int JobId)
+        public async Task<Jobs?> Update(int JobId , JobRequest request)
         {
-            throw new NotImplementedException();
+            var job = await this.GetById(JobId);
+            if(job == null)
+            {
+                throw new Exception("Job Not Found");
+            }
+            job.Title = request.Title;
+            job.Notes = request.Notes;
+            job.StartTime = request.StartTime;
+            job.EndTime = request.EndTime;
+            job.UpdatedAt = DateTime.Now;
+            job.JobAddress = request.JobAddress;
+            await dbContext.SaveChangesAsync();
+            return job;
         }
     }
 }

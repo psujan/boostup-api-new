@@ -123,6 +123,36 @@ namespace Boostup.API.Controllers.Roster
         }
 
         [Authorize(Roles = "SuperAdmin")]
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id , [FromBody] JobRequest request)
+        {
+            try
+            {
+                var row = await jobRepository.Update(id, request);
+                return Ok(new ApiResponse<Jobs>()
+                {
+                    Data = row,
+                    Message = "Job Updated Successfully",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in updating job " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
