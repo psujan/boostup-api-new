@@ -2,6 +2,7 @@
 using Boostup.API.Data;
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
+using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,8 @@ namespace Boostup.API.Repositories
             var employee = new EmployeeDetail()
             {
                 UserId = user.Id,
-                Contact = phone
+                Contact = phone,
+                JoinedDate = DateTime.Now,
             };
 
             await dbContext.EmployeeDetail.AddAsync(employee);
@@ -52,6 +54,28 @@ namespace Boostup.API.Repositories
             var resultCount = rows.Count();
             var mappedData = mapper.Map<IEnumerable<EmployeeDetailResponse>>(data);
             return new PaginatedResponse<EmployeeDetailResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
+        }
+
+        public async Task<EmployeeDetailResponse?> UpdateEmployee(EmployeeProfileUpdateRequest request)
+        {
+            var employee = await dbContext.EmployeeDetail.FindAsync(request.EmployeeId) ?? throw new Exception("Employee Not Found");
+            employee.Address = request.Address;
+            employee.Contact = request.Contact;
+            employee.EmergencyContact = request.EmergencyContact;
+            employee.EmergencyContactName = request.EmergencyContactName;
+            employee.BirthCountry = request.BirthCountry;
+            employee.DOB = request.DOB;
+            employee.Gender = request.Gender;
+            employee.IsTaxFree = request.IsTaxFree;
+            employee.BankName = request.BankName;
+            employee.AccountNumber = request.AccountNumber;
+            employee.TFN = request.TFN;
+            employee.ABN = request.ABN;
+            employee.EmploymentType = request.EmploymentType;
+            employee.Notes = request.Notes;
+            employee.UpdatedAt = DateTime.Now;
+            await dbContext.SaveChangesAsync();
+            return mapper.Map<EmployeeDetailResponse>(employee);
         }
     }
 }

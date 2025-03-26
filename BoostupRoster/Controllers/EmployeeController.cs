@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Boostup.API.Controllers
 {
@@ -152,6 +153,39 @@ namespace Boostup.API.Controllers
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
             }
+        }
+
+        [MapToApiVersion(1)]
+        [HttpPost]
+        [Route("update-profile")]
+        [Authorize(Roles = "SuperAdmin")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateEmployeeProfile([FromForm] EmployeeProfileUpdateRequest request)
+        {
+            try
+            {
+                var employee =  await employeeRepository.UpdateEmployee(request);
+                return Ok(new ApiResponse<EmployeeDetailResponse>()
+                {
+                    Success = true,
+                    Message = "Employee Profile Updated Sucessfully",
+                    Data = employee
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in fetching paginated data " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+
         }
     }
 }

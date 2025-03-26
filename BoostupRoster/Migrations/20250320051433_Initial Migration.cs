@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Boostup.API.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,12 +62,29 @@ namespace Boostup.API.Migrations
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EndTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JobAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Jobs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LeaveType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Days = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeaveType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,6 +232,31 @@ namespace Boostup.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmployeeAvailability",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    Day = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    From = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    To = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ForFullDay = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeAvailability", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeeAvailability_EmployeeDetail_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobEmployee",
                 columns: table => new
                 {
@@ -238,6 +280,46 @@ namespace Boostup.API.Migrations
                         principalTable: "Jobs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Leave",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    From = table.Column<DateOnly>(type: "date", nullable: false),
+                    To = table.Column<DateOnly>(type: "date", nullable: false),
+                    ForSingleDay = table.Column<bool>(type: "bit", nullable: true),
+                    IsPaidLeave = table.Column<bool>(type: "bit", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LeaveTypeId = table.Column<int>(type: "int", nullable: true),
+                    EmployeeDetailId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Leave", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Leave_EmployeeDetail_EmployeeDetailId",
+                        column: x => x.EmployeeDetailId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Leave_EmployeeDetail_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Leave_LeaveType_LeaveTypeId",
+                        column: x => x.LeaveTypeId,
+                        principalTable: "LeaveType",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -312,6 +394,11 @@ namespace Boostup.API.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeAvailability_EmployeeId",
+                table: "EmployeeAvailability",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EmployeeDetail_UserId",
                 table: "EmployeeDetail",
                 column: "UserId",
@@ -326,6 +413,21 @@ namespace Boostup.API.Migrations
                 name: "IX_JobEmployee_JobId",
                 table: "JobEmployee",
                 column: "JobId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Leave_EmployeeDetailId",
+                table: "Leave",
+                column: "EmployeeDetailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Leave_EmployeeId",
+                table: "Leave",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Leave_LeaveTypeId",
+                table: "Leave",
+                column: "LeaveTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roster_EmployeeId",
@@ -357,13 +459,22 @@ namespace Boostup.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "EmployeeAvailability");
+
+            migrationBuilder.DropTable(
                 name: "JobEmployee");
+
+            migrationBuilder.DropTable(
+                name: "Leave");
 
             migrationBuilder.DropTable(
                 name: "Roster");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "LeaveType");
 
             migrationBuilder.DropTable(
                 name: "EmployeeDetail");

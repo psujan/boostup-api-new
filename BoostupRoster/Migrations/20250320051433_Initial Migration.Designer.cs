@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250305034318_Add Job Address")]
-    partial class AddJobAddress
+    [Migration("20250320051433_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,45 @@ namespace Boostup.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Boostup.API.Entities.EmployeeAvailability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Day")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ForFullDay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("From")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeAvailability");
+                });
 
             modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
                 {
@@ -171,6 +210,9 @@ namespace Boostup.API.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("EmployeeDetailId")
+                        .HasColumnType("int");
+
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
@@ -203,6 +245,8 @@ namespace Boostup.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeDetailId");
 
                     b.HasIndex("EmployeeId");
 
@@ -486,6 +530,17 @@ namespace Boostup.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.EmployeeAvailability", b =>
+                {
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "EmployeeDetail")
+                        .WithMany("Availabilities")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EmployeeDetail");
+                });
+
             modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
                 {
                     b.HasOne("Boostup.API.Entities.User", "User")
@@ -518,8 +573,12 @@ namespace Boostup.API.Migrations
 
             modelBuilder.Entity("Boostup.API.Entities.Leave", b =>
                 {
-                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", null)
                         .WithMany("Leaves")
+                        .HasForeignKey("EmployeeDetailId");
+
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
+                        .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -603,6 +662,8 @@ namespace Boostup.API.Migrations
 
             modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
                 {
+                    b.Navigation("Availabilities");
+
                     b.Navigation("JobEmployee");
 
                     b.Navigation("Leaves");

@@ -5,7 +5,7 @@ using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
-using Boostup.API.Migrations;
+//using Boostup.API.Migrations;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;

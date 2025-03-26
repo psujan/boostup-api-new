@@ -7,10 +7,10 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 //configure serilog
-Log.Logger = new LoggerConfiguration()
+/*Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Month)
     .CreateLogger();
-builder.Host.UseSerilog();
+builder.Host.UseSerilog();*/
 
 // Add services to the container.
 
@@ -26,6 +26,9 @@ builder.Services.RegisterService(builder);
 
 
 var app = builder.Build();
+
+// prevent cors error
+app.UseCors("AllowAllPolicy");
 //Log http request automatically
 //app.UseSerilogRequestLogging(); 
 
@@ -65,4 +68,4 @@ if (args.Contains("seed"))
 
 app.Run();
 
-Log.CloseAndFlush();
+//Log.CloseAndFlush();
