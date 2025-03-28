@@ -1,5 +1,6 @@
 ﻿using Boostup.API.Entities;
 using Boostup.API.Entities.Dtos.Request;
+using Microsoft.AspNetCore.Identity;
 
 namespace Boostup.API.Interfaces.Auth
 {
@@ -11,5 +12,7 @@ namespace Boostup.API.Interfaces.Auth
         Task<Boolean> CheckPassword(User user, string password);
         Task<List<string>?> GetRoles(User user);
         Task<User?> GetUserById(string id);
+        Task<string> GetPasswordResetLink(User user);
+        Task<IdentityResult> UpdatePassword(UpdatePasswordReqest request);
     }
 }

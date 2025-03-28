@@ -6,9 +6,14 @@ using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces.Auth;
 using Boostup.API.Repositories.Auth;
+using Boostup.API.Services.Interfaces;
+using Boostup.API.Templates;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Serilog.Events;
 using System.Net;
+using ResetPasswordRequest = Boostup.API.Entities.Dtos.Request.ResetPasswordRequest;
 
 namespace Boostup.API.Controllers.Auth
 {
@@ -21,23 +26,29 @@ namespace Boostup.API.Controllers.Auth
         private readonly IUserManagerRepository userManagerRepository;
         private readonly ITokenRepository tokenRepository;
         private readonly IMapper mapper;
+        private readonly IEmailService emailService;
+        private readonly IConfiguration configuration;
 
         public AuthController(ILogger<AuthController> _logger , 
             IUserManagerRepository userManagerRepository,
             ITokenRepository tokenRepository,
-            IMapper mapper
+            IMapper mapper,
+            IEmailService emailService,
+            IConfiguration configuration
         )
         {
             this.logger = _logger;
             this.userManagerRepository = userManagerRepository;
             this.tokenRepository = tokenRepository;
             this.mapper = mapper;
+            this.emailService = emailService;
+            this.configuration = configuration;
         }
 
 
         [MapToApiVersion(1)]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromBody] Entities.Dtos.Request.LoginRequest loginRequest)
         {
             try
             {
@@ -109,6 +120,86 @@ namespace Boostup.API.Controllers.Auth
             }
         }
 
-        
+        [MapToApiVersion(1)]
+        [HttpPost]
+        [Route("reset-password-email")]
+        public async Task<IActionResult> GetPasswordResetEmail([FromBody]ResetPasswordRequest request)
+        {
+            try
+            {
+                var user = await userManagerRepository.GetUserByUserName(request.Email) ?? throw new Exception("User With This Email Is Not Found");
+                var resetLink = await RequestPasswordResetLink(user);
+                var messageTemplate = MessageTemplates.ForgotPasswordEmailTemplate(user.FullName , resetLink);
+                await emailService.SendEmailAsync(configuration["App:HostEmailAddr"], user.Email, "[BoostupCleaningService] Reset Password Instructions For Your Account", messageTemplate);
+                return Ok(new ApiResponse<object>()
+                {
+                    Success = true,
+                    Data = null,
+                    Message = $"Email Send To {user.FullName} Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in password request for: " + request.Email + "Exception :" + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+
+            }
+        }
+
+        private async Task<string> RequestPasswordResetLink(User user)
+        {
+           return await userManagerRepository.GetPasswordResetLink(user);
+        }
+
+        [MapToApiVersion(1)]
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody]UpdatePasswordReqest request)
+        {
+           try
+            {
+                var result = await userManagerRepository.UpdatePassword(request);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new ApiResponse<object>()
+                    {
+                        Success = true,
+                        Data = result,
+                        Message = "Password Changed Successfully"
+                    });
+                }
+                else
+                {
+                    return Ok(new ApiResponse<object>()
+                    {
+                        Success = false,
+                        Data = result,
+                        Message = "Unable to update user's password"
+                    });
+                }
+           }
+           catch (Exception ex)
+            {
+                logger.LogError("Exception occured in updating password " + request.Email + "Exception :" + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
     }
 }

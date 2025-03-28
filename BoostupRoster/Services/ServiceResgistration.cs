@@ -6,6 +6,7 @@ using Boostup.API.Interfaces.Auth;
 using Boostup.API.Mapper;
 using Boostup.API.Repositories;
 using Boostup.API.Repositories.Auth;
+using Boostup.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -92,6 +93,7 @@ namespace Boostup.API.Services
             services.AddScoped<ILeaveRepository, LeaveRepository>();
             services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+            services.AddSingleton<IEmailService, EmailService>();
             return services;
         }
     }
