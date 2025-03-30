@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250320051433_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20250330084148_EmployeeProfileImage")]
+    partial class EmployeeProfileImage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,10 @@ namespace Boostup.API.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TFN")
                         .HasColumnType("nvarchar(max)");
 
@@ -139,6 +143,47 @@ namespace Boostup.API.Migrations
                         .IsUnique();
 
                     b.ToTable("EmployeeDetail");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.EmployeeProfileImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MimeType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OriginalName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Size")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("EmployeeProfileImage");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.JobEmployee", b =>
@@ -552,6 +597,15 @@ namespace Boostup.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.EmployeeProfileImage", b =>
+                {
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
+                        .WithOne("Image")
+                        .HasForeignKey("Boostup.API.Entities.EmployeeProfileImage", "EmployeeId");
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("Boostup.API.Entities.JobEmployee", b =>
                 {
                     b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
@@ -663,6 +717,8 @@ namespace Boostup.API.Migrations
             modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
                 {
                     b.Navigation("Availabilities");
+
+                    b.Navigation("Image");
 
                     b.Navigation("JobEmployee");
 

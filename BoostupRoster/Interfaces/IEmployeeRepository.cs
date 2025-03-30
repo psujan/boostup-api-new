@@ -11,6 +11,7 @@ namespace Boostup.API.Interfaces
         Task<EmployeeDetailResponse?> GetById(int id);
         Task<PaginatedResponse<EmployeeDetailResponse?>> GetPaginated(int pageNo, int pageSize);
         Task<EmployeeDetailResponse?> UpdateEmployee(EmployeeProfileUpdateRequest request);
+        Task<EmployeeProfileImage> UpdateProfileImage(EmployeeProfileImageRequest request);
 
     }
 }

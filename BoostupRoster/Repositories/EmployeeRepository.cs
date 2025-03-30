@@ -5,6 +5,7 @@ using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
+using Boostup.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Boostup.API.Repositories
@@ -13,11 +14,13 @@ namespace Boostup.API.Repositories
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly IFileUploadService fileService;
 
-        public EmployeeRepository(ApplicationDbContext dbContext, IMapper mapper)
+        public EmployeeRepository(ApplicationDbContext dbContext, IMapper mapper, IFileUploadService fileService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.fileService = fileService;
         }
         public async Task<EmployeeDetailResponse?> AddEmployee(User user, string? phone)
         {
@@ -76,6 +79,39 @@ namespace Boostup.API.Repositories
             employee.UpdatedAt = DateTime.Now;
             await dbContext.SaveChangesAsync();
             return mapper.Map<EmployeeDetailResponse>(employee);
+        }
+
+      
+        public async Task<EmployeeProfileImage?> UpdateProfileImage(EmployeeProfileImageRequest request)
+        {
+            var profileImage = await fileService.UploadFile(request.ImageFile, "EmployeeProfile", "ProfileImages");
+            if (profileImage == null)
+            {
+                return null;   
+            }
+
+            // check existing image and delete if the profile image already exists
+            var image = await dbContext.EmployeeProfileImage.Where(x => x.EmployeeId == request.EmployeeId).FirstOrDefaultAsync();
+            if (image != null) 
+            {
+                fileService.DeleteFileIfExists(image.Path);
+                dbContext.Remove(image);
+                await dbContext.SaveChangesAsync();
+                // delete file from file system aswell
+            }
+
+            var employeeImage = new EmployeeProfileImage()
+            {
+                EmployeeId = request.EmployeeId,
+                Path = profileImage.Path,
+                Size = profileImage.ByteSize,
+                Name =  profileImage.FileName,
+                OriginalName = profileImage.OriginalName,
+                CreatedAt = DateTime.Now,
+            };
+            dbContext.EmployeeProfileImage.Add(employeeImage);
+            await dbContext.SaveChangesAsync();
+            return employeeImage;
         }
     }
 }

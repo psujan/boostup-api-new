@@ -106,7 +106,7 @@ namespace Boostup.API.Controllers.Auth
             }
             catch (Exception ex)
             {
-                logger.LogError("Exception occured in login for: " + loginRequest.Email + "Exception :" +ex.Message);
+                logger.LogError("Exception occured in login for: " + loginRequest.Email + " Exception :" + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
                     Success = false,

@@ -216,6 +216,7 @@ namespace Boostup.API.Migrations
                     JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EmploymentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -255,6 +256,32 @@ namespace Boostup.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            /*migrationBuilder.CreateTable(
+                name: "EmployeeProfileImage",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OriginalName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MimeType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Size = table.Column<double>(type: "float", nullable: true),
+                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeProfileImage", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeeProfileImage_EmployeeDetail_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });*/
 
             migrationBuilder.CreateTable(
                 name: "JobEmployee",
@@ -405,6 +432,12 @@ namespace Boostup.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeProfileImage_EmployeeId",
+                table: "EmployeeProfileImage",
+                column: "EmployeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobEmployee_EmployeeId",
                 table: "JobEmployee",
                 column: "EmployeeId");
@@ -460,6 +493,9 @@ namespace Boostup.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "EmployeeAvailability");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeProfileImage");
 
             migrationBuilder.DropTable(
                 name: "JobEmployee");

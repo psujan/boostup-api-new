@@ -93,6 +93,7 @@ namespace Boostup.API.Services
             services.AddScoped<ILeaveRepository, LeaveRepository>();
             services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+            services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddSingleton<IEmailService, EmailService>();
             return services;
         }
