@@ -187,5 +187,38 @@ namespace Boostup.API.Controllers
             }
 
         }
+
+        [MapToApiVersion(1)]
+        [HttpPost]
+        [Route("update-image")]
+        [Authorize(Roles = "SuperAdmin")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateEmployeeProfile([FromForm]EmployeeProfileImageRequest request)
+        {
+            try
+            {
+                var data = await employeeRepository.UpdateProfileImage(request);
+                return Ok(new ApiResponse<EmployeeProfileImage>()
+                {
+                    Success = data != null ? true : false,
+                    Message = data != null ? "Employee Profile Updated Sucessfully":"Failed To Upload Image",
+                    Data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in updating profile image" + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+
+        }
     }
 }

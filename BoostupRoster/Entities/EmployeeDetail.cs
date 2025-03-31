@@ -21,6 +21,7 @@ namespace Boostup.API.Entities
         public DateTime? JoinedDate { get; set; }
         public string? EmploymentType {  get; set; }
         public string? Notes {  get; set; }
+        public string Status { get; set; } = "Active";
         public string UserId { get; set; }
         public User User { get; set; }
         //public ICollection<Jobs>? Jobs { get; set; }
@@ -28,5 +29,6 @@ namespace Boostup.API.Entities
         public ICollection<Roster>? Rosters { get; set;}
         public ICollection<Leave>? Leaves { get; set; }
         public ICollection<EmployeeAvailability>? Availabilities { get; set; }
+        public EmployeeProfileImage? Image { get; set; }
     }
 }

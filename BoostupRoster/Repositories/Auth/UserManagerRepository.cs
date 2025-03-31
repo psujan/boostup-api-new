@@ -9,10 +9,13 @@ namespace Boostup.API.Repositories.Auth
     public class UserManagerRepository : IUserManagerRepository
     {
         private readonly UserManager<User> userManager;
+        private readonly IConfiguration configuration;
         private static readonly string DefaultRole = "Employee";
-        public UserManagerRepository(UserManager<User> userManager)
+        private static readonly string ResetLink = "/reset-password";
+        public UserManagerRepository(UserManager<User> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.configuration = configuration;
         }
 
         public async Task<User?> RegisterUser(OnboardRequest request)
@@ -76,5 +79,23 @@ namespace Boostup.API.Repositories.Auth
             return user;
         }
 
+        public async Task<string> GetPasswordResetLink(User user)
+        {
+            var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+            if(configuration["App:Env"] == "Development")
+            {
+                return configuration["App:FrontendBaseUrlDevelopment"] + $"?email={user.Email}&token={resetToken}";
+            }
+
+            return configuration["App:FrontendBaseUrlProduction"] + $"?email={user.Email}&token={resetToken}";
+
+        }
+
+        public async Task<IdentityResult> UpdatePassword(UpdatePasswordReqest request)
+        {
+            var user = await userManager.FindByEmailAsync(request.Email) ?? throw new Exception("User Not Found");
+            var result = await userManager.ResetPasswordAsync(user, request.ResetToken, request.Password);
+            return result;
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace Boostup.API.Data
         public DbSet<LeaveType> LeaveType { get; set; }
         public DbSet<Leave> Leave { get; set; }
         public DbSet<EmployeeAvailability> EmployeeAvailability { get; set; }
+        public DbSet<EmployeeProfileImage> EmployeeProfileImage { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
@@ -38,8 +39,8 @@ namespace Boostup.API.Data
             modelBuilder.Entity<JobEmployee>()
                 .HasOne(je => je.Employee)
                 .WithMany(e => e.JobEmployee)
-                .HasForeignKey(je => je.EmployeeId);  
-            
+                .HasForeignKey(je => je.EmployeeId);
+
             modelBuilder.Entity<Roster>()
                 .HasOne(r => r.Employee)
                 .WithMany(e => e.Rosters)
@@ -47,8 +48,14 @@ namespace Boostup.API.Data
 
             modelBuilder.Entity<EmployeeDetail>()
                 .HasMany(e => e.Rosters)
-                .WithOne(r  => r.Employee)
+                .WithOne(r => r.Employee)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EmployeeDetail>()
+                .HasOne(e => e.Image)
+                .WithOne(i => i.Employee)
+                .HasForeignKey<EmployeeProfileImage>(e => e.EmployeeId)
+                .IsRequired(false);
 
             modelBuilder.Entity<Leave>()
                 .HasOne(l => l.LeaveType)

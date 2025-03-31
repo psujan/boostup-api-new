@@ -4,6 +4,7 @@ using Boostup.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328064643_Initial Migration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -597,8 +600,10 @@ namespace Boostup.API.Migrations
             modelBuilder.Entity("Boostup.API.Entities.EmployeeProfileImage", b =>
                 {
                     b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
-                        .WithOne("Image")
-                        .HasForeignKey("Boostup.API.Entities.EmployeeProfileImage", "EmployeeId");
+                        .WithOne()
+                        .HasForeignKey("Boostup.API.Entities.EmployeeProfileImage", "EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Employee");
                 });
@@ -714,8 +719,6 @@ namespace Boostup.API.Migrations
             modelBuilder.Entity("Boostup.API.Entities.EmployeeDetail", b =>
                 {
                     b.Navigation("Availabilities");
-
-                    b.Navigation("Image");
 
                     b.Navigation("JobEmployee");
 
