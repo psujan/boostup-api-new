@@ -26,11 +26,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 );
 builder.Services.RegisterService(builder);
 
+// to solev cors
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
+
 
 // prevent cors error
-app.UseCors("AllowAllPolicy");
+var app = builder.Build();
+app.UseCors("AllowAll");
 //Log http request automatically
 //app.UseSerilogRequestLogging(); 
 
@@ -49,6 +62,8 @@ app.UseStaticFiles();
 app.MapControllers();
 app.MapGet("/", () => "Welcome to BoostupCleaning Services");
 
+
+
 if (args.Contains("seed"))
 {
     // Run the seeding process
@@ -60,7 +75,7 @@ if (args.Contains("seed"))
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
         dbContext.Database.Migrate();
         await SeedData.SeedRoles(dbContext);
-        await SeedData.SeedUser(services , dbContext);
+        await SeedData.SeedUser(services, dbContext);
         await SeedData.SeedJobs(dbContext);
         await SeedData.SeedLeaveTypes(dbContext);
     }
@@ -69,6 +84,7 @@ if (args.Contains("seed"))
     Environment.Exit(0); // Ensure app exits after seeding
 }
 
+// app.UseCors("AllowAll");
 app.Run();
 
 //Log.CloseAndFlush();
