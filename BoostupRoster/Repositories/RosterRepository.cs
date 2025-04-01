@@ -71,5 +71,10 @@ namespace Boostup.API.Repositories
             await dbContext.SaveChangesAsync();
             return roster;
         }
+
+        public Task<List<Roster>> SwapRoster(RosterSwapRequest request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
