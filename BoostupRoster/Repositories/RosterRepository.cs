@@ -72,9 +72,16 @@ namespace Boostup.API.Repositories
             return roster;
         }
 
-        public Task<List<Roster>> SwapRoster(RosterSwapRequest request)
+        public async Task<Roster?> SwapRoster(RosterSwapRequest request)
         {
-            throw new NotImplementedException();
+            var roster = await dbContext.Roster.FindAsync(request.RosterId);
+            if (roster == null)
+            {
+                throw new Exception("Roster Not Found");
+            }
+            roster.EmployeeId = request.EmployeeId;
+            await dbContext.SaveChangesAsync();
+            return roster;
         }
     }
 }

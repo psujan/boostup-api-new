@@ -257,7 +257,7 @@ namespace Boostup.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            /*migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "EmployeeProfileImage",
                 columns: table => new
                 {
@@ -279,9 +279,8 @@ namespace Boostup.API.Migrations
                         name: "FK_EmployeeProfileImage_EmployeeDetail_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "EmployeeDetail",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });*/
+                        principalColumn: "Id");
+                });
 
             migrationBuilder.CreateTable(
                 name: "JobEmployee",

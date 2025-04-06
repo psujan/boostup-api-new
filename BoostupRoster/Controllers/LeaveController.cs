@@ -93,37 +93,29 @@ namespace Boostup.API.Controllers
         [Route("get-paginated")]
         public async Task<IActionResult> GetPaginatedLeaves([FromRoute] LeaveFilterRequest request)
         {
-            var data = await leaveRepository.GetLeave(request);
-            return Ok(new Entities.Common.ApiResponse<PaginatedResponse<LeaveResponse?>>()
-            {
-                Success = true,
-                Message = "Data Fetched Successfully",
-                Data = data
-            });
-           /* try
-            {
-                var data = await leaveRepository.GetLeave(request);
-                return Ok(new Entities.Common.ApiResponse<PaginatedResponse<LeaveResponse?>>()
-                {
-                    Success = true,
-                    Message = "Data Fetched Successfully",
-                    Data = data
-                });
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Exception occured in fetching leave list " + ex.Message);
-                return new ObjectResult(new ApiResponse<string>()
-                {
-                    Success = false,
-                    Message = ex.Message,
-                    Data = ""
-                })
-                {
-                    StatusCode = (int)HttpStatusCode.InternalServerError
-                };
-            }*/
-
+             try
+             {
+                 var data = await leaveRepository.GetLeave(request);
+                 return Ok(new Entities.Common.ApiResponse<PaginatedResponse<LeaveResponse?>>()
+                 {
+                     Success = true,
+                     Message = "Data Fetched Successfully",
+                     Data = data
+                 });
+             }
+             catch (Exception ex)
+             {
+                 logger.LogError("Exception occured in fetching leave list " + ex.Message);
+                 return new ObjectResult(new ApiResponse<string>()
+                 {
+                     Success = false,
+                     Message = ex.Message,
+                     Data = ""
+                 })
+                 {
+                     StatusCode = (int)HttpStatusCode.InternalServerError
+                 };
+             }
         }
 
         [Authorize(Roles = "SuperAdmin, Employee")]
