@@ -30,5 +30,6 @@ namespace Boostup.API.Entities
         public ICollection<Leave>? Leaves { get; set; }
         public ICollection<EmployeeAvailability>? Availabilities { get; set; }
         public EmployeeProfileImage? Image { get; set; }
+        public ICollection<Timesheet>? Timesheets { get; set; }
     }
 }

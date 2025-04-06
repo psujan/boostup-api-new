@@ -380,6 +380,43 @@ namespace Boostup.API.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Timesheet",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    RosterId = table.Column<int>(type: "int", nullable: true),
+                    JobId = table.Column<int>(type: "int", nullable: true),
+                    ClockIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClockOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalHous = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Timesheet", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Timesheet_EmployeeDetail_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeeDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Timesheet_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Timesheet_Roster_RosterId",
+                        column: x => x.RosterId,
+                        principalTable: "Roster",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -470,6 +507,21 @@ namespace Boostup.API.Migrations
                 name: "IX_Roster_JobId",
                 table: "Roster",
                 column: "JobId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timesheet_EmployeeId",
+                table: "Timesheet",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timesheet_JobId",
+                table: "Timesheet",
+                column: "JobId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timesheet_RosterId",
+                table: "Timesheet",
+                column: "RosterId");
         }
 
         /// <inheritdoc />
@@ -503,13 +555,16 @@ namespace Boostup.API.Migrations
                 name: "Leave");
 
             migrationBuilder.DropTable(
-                name: "Roster");
+                name: "Timesheet");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "LeaveType");
+
+            migrationBuilder.DropTable(
+                name: "Roster");
 
             migrationBuilder.DropTable(
                 name: "EmployeeDetail");

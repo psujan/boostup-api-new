@@ -9,5 +9,7 @@
         public string? JobAddress { get; set; }
         //public ICollection<EmployeeDetail>?  Employees { get; set; }
         public ICollection<JobEmployee>? JobEmployee { get; set; }
+        public ICollection<Timesheet>? Timesheets { get; set; }
+
     }
 }

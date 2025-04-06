@@ -367,6 +367,52 @@ namespace Boostup.API.Migrations
                     b.ToTable("Roster");
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.Timesheet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClockIn")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClockOut")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RosterId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TotalHous")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("RosterId");
+
+                    b.ToTable("Timesheet");
+                });
+
             modelBuilder.Entity("Boostup.API.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -660,6 +706,29 @@ namespace Boostup.API.Migrations
                     b.Navigation("Job");
                 });
 
+            modelBuilder.Entity("Boostup.API.Entities.Timesheet", b =>
+                {
+                    b.HasOne("Boostup.API.Entities.EmployeeDetail", "Employee")
+                        .WithMany("Timesheets")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Boostup.API.Entities.Jobs", "Job")
+                        .WithMany("Timesheets")
+                        .HasForeignKey("JobId");
+
+                    b.HasOne("Boostup.API.Entities.Roster", "Roster")
+                        .WithMany("Timesheets")
+                        .HasForeignKey("RosterId");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Roster");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -722,11 +791,20 @@ namespace Boostup.API.Migrations
                     b.Navigation("Leaves");
 
                     b.Navigation("Rosters");
+
+                    b.Navigation("Timesheets");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.Jobs", b =>
                 {
                     b.Navigation("JobEmployee");
+
+                    b.Navigation("Timesheets");
+                });
+
+            modelBuilder.Entity("Boostup.API.Entities.Roster", b =>
+                {
+                    b.Navigation("Timesheets");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.User", b =>

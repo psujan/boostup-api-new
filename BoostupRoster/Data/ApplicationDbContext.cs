@@ -17,6 +17,7 @@ namespace Boostup.API.Data
         public DbSet<Leave> Leave { get; set; }
         public DbSet<EmployeeAvailability> EmployeeAvailability { get; set; }
         public DbSet<EmployeeProfileImage> EmployeeProfileImage { get; set; }
+        public DbSet<Timesheet> Timesheet{ get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
@@ -69,6 +70,24 @@ namespace Boostup.API.Data
                 .HasOne(a => a.EmployeeDetail)
                 .WithMany(emp => emp.Availabilities)
                 .HasForeignKey(a => a.EmployeeId);
+
+            modelBuilder.Entity<Timesheet>()
+                .HasOne(t => t.Employee)
+                .WithMany(e => e.Timesheets)
+                .HasForeignKey(t => t.EmployeeId);
+
+            modelBuilder.Entity<Timesheet>()
+               .HasOne(t => t.Roster)
+               .WithMany(r => r.Timesheets)
+               .HasForeignKey(t => t.RosterId)
+               .IsRequired(true);
+
+            modelBuilder.Entity<Timesheet>()
+               .HasOne(t => t.Job)
+               .WithMany(j => j.Timesheets)
+               .HasForeignKey(t => t.JobId)
+               .IsRequired(false);
+
         }
     }
 }
