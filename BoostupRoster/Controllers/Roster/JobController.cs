@@ -195,7 +195,7 @@ namespace Boostup.API.Controllers.Roster
                 return Ok(new ApiResponse<PaginatedResponse<Jobs>?>()
                 {
                     Data = rows,
-                    Message = "Jobs Fetched Successfully",
+                    Message = "Job Data Fetched Successfully",
                     Success = true
                 });
             }
