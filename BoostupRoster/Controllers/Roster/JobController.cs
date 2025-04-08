@@ -4,6 +4,7 @@ using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
+using Boostup.API.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +87,7 @@ namespace Boostup.API.Controllers.Roster
             }
         }
 
-        [Authorize (Roles ="SuperAdmin")]
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] JobRequest request)
         {
@@ -107,7 +108,7 @@ namespace Boostup.API.Controllers.Roster
                     Success = true
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError("Exception occured in adding job " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
@@ -125,7 +126,7 @@ namespace Boostup.API.Controllers.Roster
         [Authorize(Roles = "SuperAdmin")]
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id , [FromBody] JobRequest request)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] JobRequest request)
         {
             try
             {
@@ -188,29 +189,60 @@ namespace Boostup.API.Controllers.Roster
         public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber, int pageSize)
         {
 
-             try
-             {
+            try
+            {
                 var rows = await jobRepository.GetPaginated(pageNumber, pageSize);
-                 return Ok(new ApiResponse<PaginatedResponse<Jobs>?>()
-                 {
-                     Data = rows,
-                     Message = "Jobs Fetched Successfully",
-                     Success = true
-                 });
-             }
-             catch (Exception ex)
-             {
-                 logger.LogError("Exception occured in deleteing job " + ex.Message);
-                 return new ObjectResult(new ApiResponse<string>()
-                 {
-                     Success = false,
-                     Message = ex.Message,
-                     Data = ""
-                 })
-                 {
-                     StatusCode = (int)HttpStatusCode.InternalServerError
-                 };
-             }
+                return Ok(new ApiResponse<PaginatedResponse<Jobs>?>()
+                {
+                    Data = rows,
+                    Message = "Jobs Fetched Successfully",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleteing job " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin , Employee")]
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int Id)
+        {
+
+            try
+            {
+                var row  = await jobRepository.GetById(Id);
+                return Ok(new ApiResponse<Jobs?>()
+                {
+                    Data = row,
+                    Message = "Jobs Fetched Successfully",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleteing job " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
         }
     }
 }
