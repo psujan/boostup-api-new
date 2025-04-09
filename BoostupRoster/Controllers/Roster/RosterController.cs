@@ -44,7 +44,7 @@ namespace Boostup.API.Controllers.Roster
         public async Task<IActionResult> ListRoster([FromQuery] RosterFilterRequest request)
         {
             var rows = await rosterRepository.ListRoster(request);
-            return Ok(new ApiResponse<IEnumerable<EmployeeWithRosterResponse>>()
+            return Ok(new ApiResponse<PaginatedResponse<EmployeeWithRosterResponse?>?>()
             {
                 Success = true,
                 Data = rows,

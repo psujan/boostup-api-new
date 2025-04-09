@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Boostup.API.Data;
 using Boostup.API.Entities;
+using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
@@ -19,21 +20,44 @@ namespace Boostup.API.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<EmployeeWithRosterResponse>?> ListRoster(RosterFilterRequest request)
+        public async Task<PaginatedResponse<EmployeeWithRosterResponse?>?> ListRoster(RosterFilterRequest request)
         {
             var startDate = DateOnly.Parse(request.From);
             var endDate = DateOnly.Parse(request.To);
-            // var rows = await dbContext.EmployeeDetail.Where(emp => request.EmployeeIds.Contains(emp.Id)).ToListAsync();
-            var rows = await dbContext.EmployeeDetail
-                .Where(emp => request.EmployeeIds.Contains(emp.Id))
-                .Include(emp => emp.User)
-                .Include(emp => emp.Rosters.Where(
-                    roster => roster.Date <= endDate && roster.Date >= startDate))
-                .ThenInclude(roster => roster.Job)
-                .AsNoTracking()
-                .ToListAsync();
+            int pageNumber =  request.PageNumber;
+            int pageSize = request.PageSize;
+
+            IQueryable<EmployeeDetail> query = dbContext.Set<EmployeeDetail>();
+
+            if(request.EmployeeIds != null)
+            {
+                query = query.Where(emp => request.EmployeeIds.Contains(emp.Id));
+            }
+
+            query = query.Include(emp => emp.User)
+                        .Include(emp => emp.Rosters.Where(
+                            roster => roster.Date <= endDate && roster.Date >= startDate))
+                        .ThenInclude(roster => roster.Job);
+
+            query = query.OrderByDescending(x => x.User.FullName);
+            query = query.Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize);
+                        
+            var rows = await query.AsNoTracking().ToListAsync();
+            //// var rows = await dbContext.EmployeeDetail.Where(emp => request.EmployeeIds.Contains(emp.Id)).ToListAsync();
+            //var rows = await dbContext.EmployeeDetail
+            //    .Where(emp => request.EmployeeIds.Contains(emp.Id))
+            //    .Include(emp => emp.User)
+            //    .Include(emp => emp.Rosters.Where(
+            //        roster => roster.Date <= endDate && roster.Date >= startDate))
+            //    .ThenInclude(roster => roster.Job)
+            //    .AsNoTracking()
+            //    .ToListAsync();
             var mappedData = mapper.Map<IEnumerable<EmployeeWithRosterResponse>>(rows);
-            return mappedData;
+            var totalCount = await dbContext.EmployeeDetail.CountAsync();
+            var resultCount = rows.Count();
+            return new PaginatedResponse<EmployeeWithRosterResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
+            //return mappedData;
         }
 
         public async Task<List<Roster>> AddRoster(List<RosterRequest> request)
@@ -83,5 +107,7 @@ namespace Boostup.API.Repositories
             await dbContext.SaveChangesAsync();
             return roster;
         }
+
+        
     }
 }
