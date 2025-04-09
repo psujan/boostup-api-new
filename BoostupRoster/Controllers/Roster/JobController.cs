@@ -100,6 +100,7 @@ namespace Boostup.API.Controllers.Roster
                     EndTime = request.EndTime,
                     Notes = request.Notes,
                     JobAddress = request.JobAddress,
+                    CreatedAt = DateTime.Now,
                 });
                 return Ok(new ApiResponse<Jobs>()
                 {
@@ -188,7 +189,6 @@ namespace Boostup.API.Controllers.Roster
         [Route("get-paginated")]
         public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber, int pageSize)
         {
-
             try
             {
                 var rows = await jobRepository.GetPaginated(pageNumber, pageSize);

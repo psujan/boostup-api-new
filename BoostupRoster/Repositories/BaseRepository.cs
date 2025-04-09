@@ -52,7 +52,7 @@ namespace Boostup.API.Repositories
         public virtual async Task<PaginatedResponse<T>?> GetPaginated(int pageNumber , int pageSize)
         {
 
-           var rows = await dbContext.Set<T>().Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
+           var rows = await dbContext.Set<T>().OrderByDescending(x => EF.Property<object>(x, "Id")).Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
            var totalCount = await dbContext.Set<T>().CountAsync();
            var resultCount = rows.Count();
            return new PaginatedResponse<T>(rows, totalCount, resultCount, pageNumber, pageSize);
