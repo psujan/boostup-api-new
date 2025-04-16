@@ -47,8 +47,8 @@ namespace Boostup.API.Repositories
                     if (number == 547)
                     {
                         Console.WriteLine(ex.Message);
+                        throw new Exception("Sorry! This record has other related records. This can't be deleted now.");
                     }
-                    throw new Exception("Sorry! This record has other related records. This can't be deleted now.");
                 }
                 return null;
 
