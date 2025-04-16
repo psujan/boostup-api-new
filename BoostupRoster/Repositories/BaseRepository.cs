@@ -3,6 +3,7 @@ using Boostup.API.Data;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -24,14 +25,39 @@ namespace Boostup.API.Repositories
         }
         public virtual async Task<T?> Delete(int id)
         {
-            var row = await dbContext.Set<T>().FindAsync(id);
-            if(row == null)
+            try
             {
-                 throw new Exception("Row Not Found");
+                var row = await dbContext.Set<T>().FindAsync(id);
+                if (row == null)
+                {
+                    throw new Exception("Row Not Found");
+                }
+                dbContext.Set<T>().Remove(row);
+                await dbContext.SaveChangesAsync();
+                return row;
             }
-            dbContext.Set<T>().Remove(row);
-            await dbContext.SaveChangesAsync();
-            return row;
+            catch (DbUpdateException ex)
+            {
+                var sqlException = ex.GetBaseException() as SqlException;
+
+                if (sqlException != null)
+                {
+                    var number = sqlException.Number;
+
+                    if (number == 547)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    throw new Exception("Sorry! This record has other related records. This can't be deleted now.");
+                }
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw new Exception("Exception Occured In Deleting Record" + ex.Message);
+            }
         }
         public virtual async Task<IEnumerable<T>> GetAll()
         {
