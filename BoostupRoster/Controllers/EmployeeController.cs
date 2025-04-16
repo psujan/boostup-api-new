@@ -159,8 +159,7 @@ namespace Boostup.API.Controllers
         [HttpPost]
         [Route("update-profile")]
         [Authorize(Roles = "SuperAdmin")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateEmployeeProfile([FromForm] EmployeeProfileUpdateRequest request)
+        public async Task<IActionResult> UpdateEmployeeProfile([FromBody] EmployeeProfileUpdateRequest request)
         {
             try
             {
@@ -219,6 +218,37 @@ namespace Boostup.API.Controllers
                 };
             }
 
+        }
+
+        [MapToApiVersion(1)]
+        [HttpGet]
+        [Route("get-all")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var data = await employeeRepository.GetAll();
+                return Ok(new ApiResponse<IEnumerable<EmployeeBasicResponse>?>()
+                {
+                    Success = true,
+                    Data = data,
+                    Message = "Employee List Fetched Successfully"
+                });
+            }
+            catch(Exception ex)
+            {
+                logger.LogError("Error In Fetching Getting All Employee" + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
         }
     }
 }

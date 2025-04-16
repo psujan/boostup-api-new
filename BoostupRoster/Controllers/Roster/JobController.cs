@@ -244,5 +244,36 @@ namespace Boostup.API.Controllers.Roster
                 };
             }
         }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet]
+        [Route("get-all")]
+        public async Task<IActionResult> GetAll()
+        {
+
+            try
+            {
+                var row = await jobRepository.GetAll();
+                return Ok(new ApiResponse<IEnumerable<Jobs>?>()
+                {
+                    Data = row,
+                    Message = "Jobs Fetched Successfully",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleteing job " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
     }
 }

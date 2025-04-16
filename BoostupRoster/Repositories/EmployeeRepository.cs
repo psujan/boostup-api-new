@@ -37,6 +37,12 @@ namespace Boostup.API.Repositories
             return mapper.Map<EmployeeDetailResponse>(employee);
         }
 
+        public async Task<IEnumerable<EmployeeBasicResponse>?> GetAll()
+        {
+            var rows = await dbContext.EmployeeDetail.Include(emp => emp.User).OrderBy(e => e.User.FullName).ToListAsync();
+            return mapper.Map<IEnumerable<EmployeeBasicResponse>?>(rows);
+        }
+
         public async Task<EmployeeDetailResponse?> GetById(int id)
         {
             var employee = await dbContext.EmployeeDetail
@@ -76,6 +82,7 @@ namespace Boostup.API.Repositories
             employee.ABN = request.ABN;
             employee.EmploymentType = request.EmploymentType;
             employee.Notes = request.Notes;
+            employee.Status = request.Status;
             employee.UpdatedAt = DateTime.Now;
             await dbContext.SaveChangesAsync();
             return mapper.Map<EmployeeDetailResponse>(employee);

@@ -20,5 +20,6 @@
         public DateTime? JoinedDate { get; set; }
         public string? EmploymentType { get; set; }
         public string? Notes { get; set; }
+        public string? Status { get; set; } = "Active";
     }
 }
