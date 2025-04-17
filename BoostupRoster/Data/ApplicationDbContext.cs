@@ -66,6 +66,13 @@ namespace Boostup.API.Data
                 .HasOne(l => l.Employee)
                 .WithMany();
 
+            modelBuilder.Entity<Leave>()
+                .HasOne(l => l.Roster)
+                .WithMany(r => r.Leaves)
+                .HasForeignKey(l => l.RosterId)
+                .IsRequired(false);
+            
+
             modelBuilder.Entity<EmployeeAvailability>()
                 .HasOne(a => a.EmployeeDetail)
                 .WithMany(emp => emp.Availabilities)
@@ -80,13 +87,15 @@ namespace Boostup.API.Data
                .HasOne(t => t.Roster)
                .WithMany(r => r.Timesheets)
                .HasForeignKey(t => t.RosterId)
-               .IsRequired(true);
+               .IsRequired(true)
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Timesheet>()
                .HasOne(t => t.Job)
                .WithMany(j => j.Timesheets)
                .HasForeignKey(t => t.JobId)
-               .IsRequired(false);
+               .IsRequired(false)
+               .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

@@ -12,6 +12,6 @@
         public Jobs? Job { get; set; }
         public EmployeeDetail Employee {  get; set; }
         public ICollection<Timesheet>? Timesheets { get; set; }
-
+        public ICollection<Leave>?  Leaves { get; set; }
     }
 }

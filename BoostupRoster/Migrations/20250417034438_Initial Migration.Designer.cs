@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250406104046_Initial Migration")]
+    [Migration("20250417034438_Initial Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -279,6 +279,9 @@ namespace Boostup.API.Migrations
                     b.Property<string>("RejectReason")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RosterId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -296,6 +299,8 @@ namespace Boostup.API.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.HasIndex("LeaveTypeId");
+
+                    b.HasIndex("RosterId");
 
                     b.ToTable("Leave");
                 });
@@ -396,7 +401,7 @@ namespace Boostup.API.Migrations
                     b.Property<int?>("JobId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RosterId")
+                    b.Property<int>("RosterId")
                         .HasColumnType("int");
 
                     b.Property<string>("TotalHous")
@@ -687,9 +692,15 @@ namespace Boostup.API.Migrations
                         .WithMany()
                         .HasForeignKey("LeaveTypeId");
 
+                    b.HasOne("Boostup.API.Entities.Roster", "Roster")
+                        .WithMany("Leaves")
+                        .HasForeignKey("RosterId");
+
                     b.Navigation("Employee");
 
                     b.Navigation("LeaveType");
+
+                    b.Navigation("Roster");
                 });
 
             modelBuilder.Entity("Boostup.API.Entities.Roster", b =>
@@ -719,11 +730,14 @@ namespace Boostup.API.Migrations
 
                     b.HasOne("Boostup.API.Entities.Jobs", "Job")
                         .WithMany("Timesheets")
-                        .HasForeignKey("JobId");
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Boostup.API.Entities.Roster", "Roster")
                         .WithMany("Timesheets")
-                        .HasForeignKey("RosterId");
+                        .HasForeignKey("RosterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Employee");
 
@@ -807,6 +821,8 @@ namespace Boostup.API.Migrations
 
             modelBuilder.Entity("Boostup.API.Entities.Roster", b =>
                 {
+                    b.Navigation("Leaves");
+
                     b.Navigation("Timesheets");
                 });
 

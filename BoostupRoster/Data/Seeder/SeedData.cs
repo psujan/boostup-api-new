@@ -180,6 +180,16 @@ namespace Boostup.API.Data.Seeder
                         Title="Unpaid Leave",
                         Days= 30,
                     },
+                     new LeaveType()
+                     {
+                        Title="Compassionate Leave",
+                        Days= 30,
+                     },
+                      new LeaveType()
+                     {
+                        Title="Community Service Leave",
+                        Days= 10,
+                     },
                 };
 
                 await dbContext.LeaveType.AddRangeAsync(leaves);

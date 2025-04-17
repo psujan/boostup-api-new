@@ -11,7 +11,9 @@
         public string Status { get; set; } = "Pending"; // Approved, Rejected
         public string? RejectReason {get; set; }
         public int? LeaveTypeId { get; set; }
+        public int? RosterId { get; set; }
         public LeaveType? LeaveType { get; set; }
         public EmployeeDetail Employee { get; set; }
+        public Roster? Roster { get; set; }
     }
 }

@@ -35,6 +35,8 @@ namespace Boostup.API.Repositories
                 ForSingleDay = request.ForSingleDay,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
+                Notes = request.Notes,
+                RosterId = request.RosterId
             };
             dbContext.Leave.Add(leave);
             await dbContext.SaveChangesAsync();

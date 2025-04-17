@@ -30,13 +30,33 @@ namespace Boostup.API.Controllers.Roster
         [HttpPost]
         public async Task<IActionResult> AddRoster([FromBody] RosterRequest[] requests)
         {
-            var roster = await rosterRepository.AddRoster(requests.ToList());
-            return Ok(new ApiResponse<List<Entities.Roster>?>()
+            try
             {
-                Success = true,
-                Message = "Roster Added Successfully",
-                Data = roster
-            });
+                if (requests.Length == 0)
+                {
+                    throw new Exception("Request is empty. Please provide valid request");
+                }
+                var roster = await rosterRepository.AddRoster(requests.ToList());
+                return Ok(new ApiResponse<List<Entities.Roster>?>()
+                {
+                    Success = true,
+                    Message = "Roster Added Successfully",
+                    Data = roster
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in adding roster " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
         }
 
         [Authorize(Roles = "SuperAdmin")]
