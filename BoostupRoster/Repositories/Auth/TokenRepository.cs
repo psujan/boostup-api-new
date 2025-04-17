@@ -11,7 +11,7 @@ namespace Boostup.API.Repositories.Auth
     {
         private readonly IConfiguration configuration;
 
-        private static readonly int TokenExpiresIn = 360; // 6 hrs
+        private static readonly int TokenExpiresIn = 540; // 9 hrs
 
         public TokenRepository(IConfiguration configuration)
         {

@@ -99,7 +99,7 @@ namespace Boostup.API.Controllers.Auth
                 {
                     Success = true,
                     Message = "Login Sucessful",
-                    Data = new { Token = jwtToken, Roles = roles, User = mappedUser }
+                    Data = new { Token = jwtToken, Roles = roles, User = mappedUser , TokenExpiresIn = DateTime.Now.AddHours(9) }
                 });
 
 
