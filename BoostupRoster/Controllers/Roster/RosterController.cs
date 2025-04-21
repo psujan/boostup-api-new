@@ -63,13 +63,29 @@ namespace Boostup.API.Controllers.Roster
         [HttpGet]
         public async Task<IActionResult> ListRoster([FromQuery] RosterFilterRequest request)
         {
-            var rows = await rosterRepository.ListRoster(request);
-            return Ok(new ApiResponse<PaginatedResponse<EmployeeWithRosterResponse?>?>()
+            try
             {
-                Success = true,
-                Data = rows,
-                Message = "Data Fetched Successfully"
-            });
+                var rows = await rosterRepository.ListRoster(request);
+                return Ok(new ApiResponse<PaginatedResponse<EmployeeWithRosterResponse?>?>()
+                {
+                    Success = true,
+                    Data = rows,
+                    Message = "Data Fetched Successfully"
+                });
+            }
+            catch (Exception ex) 
+            {
+                logger.LogError("Exception occured in fetching rosters " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
         }
 
         [Authorize(Roles = "SuperAdmin")]
@@ -90,6 +106,66 @@ namespace Boostup.API.Controllers.Roster
             catch (Exception ex)
             {
                 logger.LogError("Exception occured in swapping roster " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin,Employee")]
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetRosterById([FromRoute]int id)
+        {
+            try
+            {
+                var row = await rosterRepository.GetById(id);
+                return Ok(new ApiResponse<RosterResponse?>()
+                {
+                    Success = true,
+                    Data = row,
+                    Message = "Roster Fetched Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleting roster " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteRoster([FromRoute] int id)
+        {
+            try
+            {
+                var row = await rosterRepository.DeleteRoster(id);
+                return Ok(new ApiResponse<Entities.Roster?>()
+                {
+                    Success = true,
+                    Data = row,
+                    Message = "Roster Deleted Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in deleting roster " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
                 {
                     Success = false,

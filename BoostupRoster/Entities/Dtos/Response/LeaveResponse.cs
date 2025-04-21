@@ -2,6 +2,7 @@
 {
     public class LeaveResponse
     {
+        public int Id { get; set; }
         public int EmployeeId { get; set; }
         public DateOnly From { get; set; }
         public DateOnly To { get; set; }

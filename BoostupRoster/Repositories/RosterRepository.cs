@@ -9,14 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Boostup.API.Repositories
 {
-    public class RosterRepository : IRosterRepository
+    public class RosterRepository : BaseRepository<Roster> , IRosterRepository
     {
-        private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public RosterRepository(ApplicationDbContext dbContext, IMapper mapper)
+        public RosterRepository(ApplicationDbContext dbContext, IMapper mapper) : base(dbContext)
         {
-            this.dbContext = dbContext;
             this.mapper = mapper;
         }
 
@@ -84,16 +82,14 @@ namespace Boostup.API.Repositories
             return roster;
         }
 
-        public async Task<Roster> DeleteRoster(int Id)
+        public async Task<Roster?> DeleteRoster(int Id)
         {
             var roster = await dbContext.Roster.FindAsync(Id);
             if (roster == null)
             {
                 throw new Exception("Roster Not Found");
             }
-            dbContext.Roster.Remove(roster);
-            await dbContext.SaveChangesAsync();
-            return roster;
+            return await base.Delete(Id);
         }
 
         public async Task<Roster?> SwapRoster(RosterSwapRequest request)
@@ -106,6 +102,22 @@ namespace Boostup.API.Repositories
             roster.EmployeeId = request.EmployeeId;
             await dbContext.SaveChangesAsync();
             return roster;
+        }
+
+        public async Task<RosterResponse> GetById(int id)
+        {
+            var row = await dbContext.Roster
+                            .Include(r => r.Employee)
+                            .ThenInclude(emp => emp.User)
+                            .Include(r => r.Leaves)
+                            .ThenInclude(l => l.LeaveType)
+                            .Include(r => r.Job)
+                            .FirstOrDefaultAsync(x => x.Id == id);
+            if (row == null)
+            {
+                throw new Exception("Roster Not Found");
+            }
+            return mapper.Map<RosterResponse>(row);
         }
 
         
