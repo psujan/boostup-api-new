@@ -120,6 +120,21 @@ namespace Boostup.API.Repositories
             return mapper.Map<RosterResponse>(row);
         }
 
-        
+        public async Task<PaginatedResponse<RosterResponse?>?> GetByEmployeeId(int id, int pageNumber, int pageSize, string from, string to)
+        {
+            var rosterFrom = DateOnly.Parse(from);
+            var rosterTo = DateOnly.Parse(to);
+            IQueryable<Roster> query = dbContext.Set<Roster>();
+            query = query.Include(r => r.Employee).ThenInclude(e => e.User);
+            query = query.Include(r => r.Leaves).ThenInclude(l => l.LeaveType);
+            query = query.Skip((pageNumber - 1) * pageSize)
+                       .Take(pageSize);
+            var rows = await query.AsNoTracking().ToListAsync();
+            var mappedData = mapper.Map<IEnumerable<RosterResponse>>(rows);
+            var totalCount = await dbContext.EmployeeDetail.CountAsync();
+            var resultCount = rows.Count();
+            return new PaginatedResponse<RosterResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
+
+        }
     }
 }

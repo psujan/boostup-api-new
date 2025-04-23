@@ -13,6 +13,6 @@ namespace Boostup.API.Interfaces
         Task<Roster?> SwapRoster(RosterSwapRequest request);
         Task<PaginatedResponse<EmployeeWithRosterResponse?>?> ListRoster(RosterFilterRequest request);
         Task<RosterResponse> GetById(int id);
-
+        Task<PaginatedResponse<RosterResponse?>?> GetByEmployeeId(int id, int pageNumber , int pageSize, string from, string to);
     }
 }

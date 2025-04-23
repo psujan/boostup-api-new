@@ -73,7 +73,7 @@ namespace Boostup.API.Controllers.Roster
                     Message = "Data Fetched Successfully"
                 });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError("Exception occured in fetching rosters " + ex.Message);
                 return new ObjectResult(new ApiResponse<string>()
@@ -121,7 +121,7 @@ namespace Boostup.API.Controllers.Roster
         [Authorize(Roles = "SuperAdmin,Employee")]
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetRosterById([FromRoute]int id)
+        public async Task<IActionResult> GetRosterById([FromRoute] int id)
         {
             try
             {
@@ -176,6 +176,37 @@ namespace Boostup.API.Controllers.Roster
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
             }
+        }
+
+        [Authorize(Roles = "SuperAdmin, Employee")]
+        [HttpGet]
+        [Route("employee/{id}")]
+        public async Task<IActionResult> ListEmployeeRoster([FromRoute] int id, [FromQuery] int pageNumber, int pageSize, string from, string to)
+        {
+            try
+            {
+                var rows = await rosterRepository.GetByEmployeeId(id, pageNumber , pageSize, from, to);
+                return Ok(new ApiResponse<PaginatedResponse<RosterResponse?>?>()
+                {
+                    Data = rows,
+                    Message = "Roster Fetched Successfully",
+                    Success = true,
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in fetching rosters " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+
         }
     }
 }
