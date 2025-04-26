@@ -10,7 +10,7 @@
         public string? Notes { get; set; }
         public int? JobId { get; set; }
         public int EmployeeId { get; set; }
-        public Jobs? Job { get; set; }
+        public JobResponseBasic? Job { get; set; }
         public EmployeeBasicResponse Employee { get; set; }
         public ICollection<LeaveResponse>? Leaves { get; set; }
         

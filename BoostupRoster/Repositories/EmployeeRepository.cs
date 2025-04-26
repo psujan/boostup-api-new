@@ -47,8 +47,15 @@ namespace Boostup.API.Repositories
         {
             var employee = await dbContext.EmployeeDetail
                             .Include(employee => employee.User)
+                            .Include(employee => employee.Image)
                             .FirstOrDefaultAsync(x => x.Id == id);
             return employee == null ? throw new Exception("Employee With " + id + " not found") : mapper.Map<EmployeeDetailResponse>(employee);
+        }
+
+        public async Task<EmployeeBasicResponse> GetEmployeeFromUserId(string userId)
+        {
+            var employee = await dbContext.EmployeeDetail.FirstOrDefaultAsync(x => x.UserId == userId);
+            return employee == null ? throw new Exception("Employee With " + userId + " not found") : mapper.Map<EmployeeBasicResponse>(employee);
         }
 
         public async Task<PaginatedResponse<EmployeeDetailResponse?>> GetPaginated(int pageNumber, int pageSize)

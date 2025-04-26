@@ -125,13 +125,16 @@ namespace Boostup.API.Repositories
             var rosterFrom = DateOnly.Parse(from);
             var rosterTo = DateOnly.Parse(to);
             IQueryable<Roster> query = dbContext.Set<Roster>();
+            query = query.Where(r => r.EmployeeId == id);
+            query = query.Where(r => r.Date >= rosterFrom && r.Date <= r.Date);
             query = query.Include(r => r.Employee).ThenInclude(e => e.User);
+            query = query.Include(r => r.Job);
             query = query.Include(r => r.Leaves).ThenInclude(l => l.LeaveType);
+            var totalCount = await query.CountAsync();
             query = query.Skip((pageNumber - 1) * pageSize)
                        .Take(pageSize);
             var rows = await query.AsNoTracking().ToListAsync();
             var mappedData = mapper.Map<IEnumerable<RosterResponse>>(rows);
-            var totalCount = await dbContext.EmployeeDetail.CountAsync();
             var resultCount = rows.Count();
             return new PaginatedResponse<RosterResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
 

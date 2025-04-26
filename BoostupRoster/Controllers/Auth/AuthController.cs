@@ -4,6 +4,7 @@ using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
 using Boostup.API.Entities.Dtos.Response;
+using Boostup.API.Interfaces;
 using Boostup.API.Interfaces.Auth;
 using Boostup.API.Repositories.Auth;
 using Boostup.API.Services.Interfaces;
@@ -25,6 +26,7 @@ namespace Boostup.API.Controllers.Auth
         private readonly ILogger<AuthController> logger;
         private readonly IUserManagerRepository userManagerRepository;
         private readonly ITokenRepository tokenRepository;
+        private readonly IEmployeeRepository empRepository;
         private readonly IMapper mapper;
         private readonly IEmailService emailService;
         private readonly IConfiguration configuration;
@@ -32,6 +34,7 @@ namespace Boostup.API.Controllers.Auth
         public AuthController(ILogger<AuthController> _logger , 
             IUserManagerRepository userManagerRepository,
             ITokenRepository tokenRepository,
+            IEmployeeRepository empRepository,
             IMapper mapper,
             IEmailService emailService,
             IConfiguration configuration
@@ -40,6 +43,7 @@ namespace Boostup.API.Controllers.Auth
             this.logger = _logger;
             this.userManagerRepository = userManagerRepository;
             this.tokenRepository = tokenRepository;
+            this.empRepository = empRepository;
             this.mapper = mapper;
             this.emailService = emailService;
             this.configuration = configuration;
@@ -94,12 +98,22 @@ namespace Boostup.API.Controllers.Auth
 
                 var jwtToken = tokenRepository.CreateJWTToken(user, roles.ToList());
                 var mappedUser = mapper.Map<UserResponse>(user);
-
+                EmployeeBasicResponse? employee = null;
+                if(roles.Contains("Employee"))
+                {
+                    employee = await empRepository.GetEmployeeFromUserId(user.Id);
+                }
                 return Ok(new ApiResponse<object>()
                 {
                     Success = true,
                     Message = "Login Sucessful",
-                    Data = new { Token = jwtToken, Roles = roles, User = mappedUser , TokenExpiresIn = DateTime.Now.AddHours(9) }
+                    Data = new { 
+                        Token = jwtToken, 
+                        Roles = roles, 
+                        User = mappedUser , 
+                        TokenExpiresIn = DateTime.Now.AddHours(9),
+                        Employee = employee
+                    }
                 });
 
 

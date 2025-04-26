@@ -7,6 +7,7 @@ namespace Boostup.API.Interfaces
 {
     public interface IEmployeeRepository
     {
+        Task<EmployeeBasicResponse> GetEmployeeFromUserId(string userId);
         Task<EmployeeDetailResponse?> AddEmployee(User user, string? phone);
         Task<EmployeeDetailResponse?> GetById(int id);
         Task<PaginatedResponse<EmployeeDetailResponse?>> GetPaginated(int pageNo, int pageSize);
