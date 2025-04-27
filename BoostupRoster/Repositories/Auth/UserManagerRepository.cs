@@ -27,6 +27,7 @@ namespace Boostup.API.Repositories.Auth
                 FullName = request.FullName
             };
             var password =  Helper.GenerateRandomString(5);
+            password = "BOOSTUP#LAKEMBA#2025";
             var identityResult = await userManager.CreateAsync(user, password);
 
             if (!identityResult.Succeeded)

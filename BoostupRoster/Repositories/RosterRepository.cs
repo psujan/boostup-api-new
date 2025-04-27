@@ -130,6 +130,7 @@ namespace Boostup.API.Repositories
             query = query.Include(r => r.Employee).ThenInclude(e => e.User);
             query = query.Include(r => r.Job);
             query = query.Include(r => r.Leaves).ThenInclude(l => l.LeaveType);
+            query = query.Include(r => r.Timesheets);
             var totalCount = await query.CountAsync();
             query = query.Skip((pageNumber - 1) * pageSize)
                        .Take(pageSize);

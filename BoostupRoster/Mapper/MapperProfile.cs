@@ -14,6 +14,7 @@ namespace Boostup.API.Mapper
             CreateMap<Roster, RosterBasicResponse>()
                 .ForMember(dest => dest.Job , opt=> opt.MapFrom(src => src.Job));
             CreateMap<EmployeeProfileImage, EmployeeImageResponse>();
+            CreateMap<Timesheet, TimeSheetResponse>();
             CreateMap<EmployeeDetail, EmployeeWithRosterResponse>()
                 .ForMember(dest => dest.RosterItems, opt => opt.MapFrom(src => src.Rosters));
             CreateMap<EmployeeDetail, EmployeeBasicResponse>()
@@ -25,7 +26,8 @@ namespace Boostup.API.Mapper
             CreateMap<Roster, RosterResponse>()
                 .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee))
                 .ForMember(dest => dest.Leaves , opt => opt.MapFrom(src => src.Leaves))
-                .ForMember(dest => dest.Job, opt => opt.MapFrom(src => src.Job));
+                .ForMember(dest => dest.Job, opt => opt.MapFrom(src => src.Job))
+                .ForMember(dest => dest.TimeSheets , opt => opt.MapFrom(src => src.Timesheets));
         }
 
 

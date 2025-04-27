@@ -13,6 +13,8 @@
         public JobResponseBasic? Job { get; set; }
         public EmployeeBasicResponse Employee { get; set; }
         public ICollection<LeaveResponse>? Leaves { get; set; }
+
+        public ICollection<TimeSheetResponse>? TimeSheets { get; set; }
         
     }
 }
