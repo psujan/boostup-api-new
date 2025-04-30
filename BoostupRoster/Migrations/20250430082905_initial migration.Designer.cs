@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boostup.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250417034438_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20250430082905_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,8 +114,8 @@ namespace Boostup.API.Migrations
                     b.Property<bool>("IsTaxFree")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("JoinedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("JoinedDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -404,8 +404,8 @@ namespace Boostup.API.Migrations
                     b.Property<int>("RosterId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TotalHous")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("TotalHours")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

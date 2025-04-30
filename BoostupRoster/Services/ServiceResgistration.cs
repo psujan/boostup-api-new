@@ -96,6 +96,7 @@ namespace Boostup.API.Services
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddScoped<ITimesheetRepository, TimeSheetRepository>();
+            services.AddScoped<IOverviewRepository, OverviewRepository>();
             return services;
         }
     }

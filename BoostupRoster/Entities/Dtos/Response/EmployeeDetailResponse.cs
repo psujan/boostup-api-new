@@ -17,7 +17,7 @@
         public string? TFN { get; set; }
         public string? ABN { get; set; }
         public string? Status {  get; set; }
-        public DateTime? JoinedDate { get; set; }
+        public DateOnly? JoinedDate { get; set; }
         public string? EmploymentType { get; set; }
         public string? Notes { get; set; }
         public string UserId { get; set; }

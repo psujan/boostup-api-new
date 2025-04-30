@@ -12,7 +12,7 @@
 
         public string? ClockOut { get; set; }
 
-        public string? TotalHous { get; set; }
+        public decimal? TotalHours { get; set; }
 
         public DateOnly Date { get; set; }
 

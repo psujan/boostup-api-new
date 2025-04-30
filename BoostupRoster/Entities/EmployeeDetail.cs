@@ -18,7 +18,7 @@ namespace Boostup.API.Entities
         public string? VerificationDocument { get; set; }   
         public string? TFN { get; set; }
         public string? ABN {  get; set; }
-        public DateTime? JoinedDate { get; set; }
+        public DateOnly? JoinedDate { get; set; }
         public string? EmploymentType {  get; set; }
         public string? Notes {  get; set; }
         public string Status { get; set; } = "Active";
@@ -31,5 +31,6 @@ namespace Boostup.API.Entities
         public ICollection<EmployeeAvailability>? Availabilities { get; set; }
         public EmployeeProfileImage? Image { get; set; }
         public ICollection<Timesheet>? Timesheets { get; set; }
+
     }
 }

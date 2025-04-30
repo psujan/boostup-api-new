@@ -36,8 +36,11 @@ namespace Boostup.API.Repositories
                         .Include(emp => emp.Rosters.Where(
                             roster => roster.Date <= endDate && roster.Date >= startDate))
                         .ThenInclude(roster => roster.Job);
+            query = query.Include(r => r.Timesheets);
 
-            query = query.OrderByDescending(x => x.User.FullName);
+            query = query.OrderBy(x => x.User.FullName);
+            var totalCount = await query.CountAsync();
+
             query = query.Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize);
                         
@@ -52,7 +55,6 @@ namespace Boostup.API.Repositories
             //    .AsNoTracking()
             //    .ToListAsync();
             var mappedData = mapper.Map<IEnumerable<EmployeeWithRosterResponse>>(rows);
-            var totalCount = await dbContext.EmployeeDetail.CountAsync();
             var resultCount = rows.Count();
             return new PaginatedResponse<EmployeeWithRosterResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
             //return mappedData;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Boostup.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -213,7 +213,7 @@ namespace Boostup.API.Migrations
                     VerificationDocument = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TFN = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ABN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    JoinedDate = table.Column<DateOnly>(type: "date", nullable: true),
                     EmploymentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -397,7 +397,7 @@ namespace Boostup.API.Migrations
                     JobId = table.Column<int>(type: "int", nullable: true),
                     ClockIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClockOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalHous = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalHours = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)

@@ -40,7 +40,7 @@ namespace Boostup.API.Repositories
             }
 
             timesheet.ClockOut = request.ClockOut;
-            timesheet.TotalHous = request.TotalHours;
+            timesheet.TotalHours = Decimal.Parse(request.TotalHours);
             timesheet.UpdatedAt = DateTime.UtcNow;
             await dbContext.SaveChangesAsync();
             return timesheet;

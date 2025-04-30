@@ -13,7 +13,7 @@
 
         public string? ClockOut { get; set; }
 
-        public string? TotalHous { get; set; }
+        public string? TotalHours { get; set; }
 
         public DateOnly Date { get; set; }
     }

@@ -32,6 +32,10 @@ namespace Boostup.API.Data
                 x.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn(1000, 1);
             });
 
+            modelBuilder.Entity<Timesheet>()
+                    .Property(t => t.TotalHours)
+                    .HasColumnType("decimal(18,2)");
+
             modelBuilder.Entity<JobEmployee>()
                 .HasOne(je => je.Job)
                 .WithMany(j => j.JobEmployee)

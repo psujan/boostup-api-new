@@ -111,8 +111,8 @@ namespace Boostup.API.Migrations
                     b.Property<bool>("IsTaxFree")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("JoinedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("JoinedDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -401,8 +401,8 @@ namespace Boostup.API.Migrations
                     b.Property<int>("RosterId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TotalHous")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("TotalHours")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

@@ -28,7 +28,7 @@ namespace Boostup.API.Repositories
             {
                 UserId = user.Id,
                 Contact = phone,
-                JoinedDate = DateTime.Now,
+                JoinedDate = DateOnly.FromDateTime(DateTime.Now),
             };
 
             await dbContext.EmployeeDetail.AddAsync(employee);
