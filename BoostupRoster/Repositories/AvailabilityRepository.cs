@@ -61,9 +61,9 @@ namespace Boostup.API.Repositories
             return await dbContext.EmployeeAvailability.Where(x => x.EmployeeId == EmpId).ToListAsync();
         }
 
-        public async Task<EmployeeAvailability?> FindAvailability(int Id, string from, string to)
+        public async Task<EmployeeAvailability?> FindAvailability(int Id, string from, string to, string day)
         {
-            return await dbContext.EmployeeAvailability.Where(r => r.EmployeeId == Id && r.From == from && r.To == to && r.ForFullDay == false).FirstOrDefaultAsync();
+            return await dbContext.EmployeeAvailability.Where(r => r.EmployeeId == Id && r.From == from && r.To == to && r.Day == day && r.ForFullDay == false).FirstOrDefaultAsync();
         }
 
         public async Task<int?> GetTotalDayCount(int Id, string Day)
@@ -85,6 +85,10 @@ namespace Boostup.API.Repositories
             return result;
         }
 
+        public async Task<EmployeeAvailability?> FindAvailabilityForFullDay(int id, string day)
+        {
+            return await dbContext.EmployeeAvailability.Where(r => r.EmployeeId == id && r.Day == day && r.ForFullDay == true).FirstOrDefaultAsync();
 
+        }
     }
 }

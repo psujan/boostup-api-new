@@ -35,10 +35,15 @@ namespace Boostup.API.Controllers
         {
             try
             {
-                var isExist = await availabilityRepository.FindAvailability(request.EmployeeId, request.From, request.To);
+                var hasFullDay = await availabilityRepository.FindAvailabilityForFullDay(request.EmployeeId, request.Day);
+                if (hasFullDay != null) {
+                    throw new Exception("An availability record already exist for full day on "+ request.Day + ".Please remove existing one if you want to add.");
+                }
+                var isExist = await availabilityRepository.FindAvailability(request.EmployeeId, request.From, request.To, request.Day);
                 if(isExist != null)
                 {
-                    throw new Exception("An availability record already exist: " + request.From + " to " + request.To);
+                    Console.WriteLine("Hello" + isExist.Id + "From" + isExist.From);
+                    throw new Exception("An availability record already exist: " + request.From + " to " + request.To + isExist.ToString());
                 }
 
                 var count = await availabilityRepository.GetTotalDayCount(request.EmployeeId, request.Day);
