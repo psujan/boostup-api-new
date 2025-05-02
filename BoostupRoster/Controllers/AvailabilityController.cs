@@ -2,6 +2,7 @@
 using Boostup.API.Entities;
 using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
 //using Boostup.API.Repositories.Employee;
 using Microsoft.AspNetCore.Authorization;
@@ -25,15 +26,29 @@ namespace Boostup.API.Controllers
             this.availabilityRepository = availabilityRepository;
             this.logger = logger;
         }
-       
+
 
         // POST api/<AvailabilityController>
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin, Employee")]
         [HttpPost]
         public async Task<IActionResult> Post(AvailabilityRequest request) 
         {
             try
             {
+                var isExist = await availabilityRepository.FindAvailability(request.EmployeeId, request.From, request.To);
+                if(isExist != null)
+                {
+                    throw new Exception("An availability record already exist: " + request.From + " to " + request.To);
+                }
+
+                var count = await availabilityRepository.GetTotalDayCount(request.EmployeeId, request.Day);
+
+                if (count >= 3)
+                {
+                    throw new Exception("There are already 3 availability records for "+ request.Day +".The max limit is 3");
+
+                }
+
                 var row = await availabilityRepository.Add(new EmployeeAvailability()
                 {
                     EmployeeId = request.EmployeeId,
@@ -66,7 +81,7 @@ namespace Boostup.API.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "SuperAdmin, Employee")]
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id , [FromBody] AvailabilityRequest request)
@@ -125,14 +140,15 @@ namespace Boostup.API.Controllers
             }
         }
 
+        [Authorize(Roles = "SuperAdmin, Employee")]
         [HttpGet]
         [Route("employee/{id}")]
         public async Task<IActionResult> GetEmployeeAvailability([FromRoute] int id)
         {
             try
             {
-                var rows = await availabilityRepository.GetEmployeeAvailability(id);
-                return Ok(new ApiResponse<IEnumerable<EmployeeAvailability>?>()
+                var rows = await availabilityRepository.GroupEmployeeAvailability(id);
+                return Ok(new ApiResponse<List<GroupedAvailabilityResponse>?>()
                 {
                     Success = true,
                     Data = rows,
