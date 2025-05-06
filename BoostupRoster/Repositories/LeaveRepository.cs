@@ -88,10 +88,11 @@ namespace Boostup.API.Repositories
             }
 
             query = query.Include(l => l.LeaveType).Include(l => l.Employee).ThenInclude(emp => emp.User);
+            var totalCount = await query.CountAsync();
+
             var rows = await query.Skip((request.PageNumber - 1) * request.PageSize)
                         .Take(request.PageSize)
                         .AsNoTracking().ToListAsync();
-            var totalCount = await dbContext.Leave.CountAsync();
             var resultCount = rows.Count();
             var mappedData = mapper.Map<IEnumerable<LeaveResponse>>(rows);
             return new PaginatedResponse<LeaveResponse?>(mappedData, totalCount, resultCount, request.PageNumber, request.PageSize);

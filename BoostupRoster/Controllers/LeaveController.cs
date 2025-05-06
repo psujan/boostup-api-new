@@ -88,10 +88,10 @@ namespace Boostup.API.Controllers
         }
 
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "SuperAdmin, Employee")]
         [HttpGet]
         [Route("get-paginated")]
-        public async Task<IActionResult> GetPaginatedLeaves([FromRoute] LeaveFilterRequest request)
+        public async Task<IActionResult> GetPaginatedLeaves([FromQuery] LeaveFilterRequest request)
         {
              try
              {
