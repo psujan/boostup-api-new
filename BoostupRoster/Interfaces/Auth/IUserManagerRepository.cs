@@ -12,7 +12,7 @@ namespace Boostup.API.Interfaces.Auth
         Task<Boolean> CheckPassword(User user, string password);
         Task<List<string>?> GetRoles(User user);
         Task<User?> GetUserById(string id);
-        Task<string> GetPasswordResetLink(User user);
+        Task<string> GetPasswordResetToken(User user);
         Task<IdentityResult> UpdatePassword(UpdatePasswordReqest request);
     }
 }

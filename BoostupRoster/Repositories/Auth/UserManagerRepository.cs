@@ -80,16 +80,9 @@ namespace Boostup.API.Repositories.Auth
             return user;
         }
 
-        public async Task<string> GetPasswordResetLink(User user)
+        public async Task<string> GetPasswordResetToken(User user)
         {
-            var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
-            if(configuration["App:Env"] == "Development")
-            {
-                return configuration["App:FrontendBaseUrlDevelopment"] + $"?email={user.Email}&token={resetToken}";
-            }
-
-            return configuration["App:FrontendBaseUrlProduction"] + $"?email={user.Email}&token={resetToken}";
-
+            return  await userManager.GeneratePasswordResetTokenAsync(user);
         }
 
         public async Task<IdentityResult> UpdatePassword(UpdatePasswordReqest request)

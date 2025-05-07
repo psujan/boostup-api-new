@@ -136,20 +136,23 @@ namespace Boostup.API.Controllers.Auth
 
         [MapToApiVersion(1)]
         [HttpPost]
-        [Route("reset-password-email")]
-        public async Task<IActionResult> GetPasswordResetEmail([FromBody]ResetPasswordRequest request)
+        [Route("reset-password-token")]
+        public async Task<IActionResult> GetPasswordResetToken([FromBody]ResetPasswordRequest request)
         {
             try
             {
                 var user = await userManagerRepository.GetUserByUserName(request.Email) ?? throw new Exception("User With This Email Is Not Found");
-                var resetLink = await RequestPasswordResetLink(user);
-                var messageTemplate = MessageTemplates.ForgotPasswordEmailTemplate(user.FullName , resetLink);
-                await emailService.SendEmailAsync(configuration["App:HostEmailAddr"], user.Email, "[BoostupCleaningService] Reset Password Instructions For Your Account", messageTemplate);
+                var resetToken = await RequestPasswordResetToken(user);
+                //var messageTemplate = MessageTemplates.ForgotPasswordEmailTemplate(user.FullName , resetLink);
+                //await emailService.SendEmailAsync(configuration["App:HostEmailAddr"], user.Email, "[BoostupCleaningService] Reset Password Instructions For Your Account", messageTemplate);
                 return Ok(new ApiResponse<object>()
                 {
                     Success = true,
-                    Data = null,
-                    Message = $"Email Send To {user.FullName} Successfully"
+                    Data = new
+                    {
+                        ResetToken = resetToken
+                    },
+                    Message = "Reset Token Created Successfully"
                 });
             }
             catch (Exception ex)
@@ -168,9 +171,9 @@ namespace Boostup.API.Controllers.Auth
             }
         }
 
-        private async Task<string> RequestPasswordResetLink(User user)
+        private async Task<string> RequestPasswordResetToken(User user)
         {
-           return await userManagerRepository.GetPasswordResetLink(user);
+           return await userManagerRepository.GetPasswordResetToken(user);
         }
 
         [MapToApiVersion(1)]
