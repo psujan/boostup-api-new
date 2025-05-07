@@ -88,6 +88,7 @@ namespace Boostup.API.Repositories
             }
 
             query = query.Include(l => l.LeaveType).Include(l => l.Employee).ThenInclude(emp => emp.User);
+            query = query.OrderByDescending(r => r.Id);
             var totalCount = await query.CountAsync();
 
             var rows = await query.Skip((request.PageNumber - 1) * request.PageSize)
