@@ -14,9 +14,22 @@ namespace Boostup.API.Repositories
         {
             this.dbContext = dbContext;
         }
-        public Task<object> GetAdminDashboardOverview()
+        public async Task<object> GetAdminDashboardOverview()
         {
-            throw new NotImplementedException();
+           var totalEmployee = await dbContext.Set<EmployeeDetail>().CountAsync();
+           var totalShift = await dbContext.Set<Roster>().CountAsync();
+           var totalClockIns = await dbContext.Set<Timesheet>().CountAsync();
+           var totalJobs = await dbContext.Set<Jobs>().CountAsync();
+           var totalLeaves = await dbContext.Set<Leave>().CountAsync();
+           
+            return new
+            {
+                TotalEmployee = totalEmployee,
+                TotalShift = totalShift,
+                TotalClockIns = totalClockIns,
+                TotalJobs = totalJobs,
+                TotalLeaves = totalLeaves
+            };
         }
 
         public async Task<EmployeeOverviewResponse> GetEmployeeDashboardOverview(int id)

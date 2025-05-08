@@ -150,7 +150,8 @@ namespace Boostup.API.Controllers.Auth
                     Success = true,
                     Data = new
                     {
-                        ResetToken = resetToken
+                        ResetToken = resetToken,
+                        ResetEmail = request.Email,
                     },
                     Message = "Reset Token Created Successfully"
                 });
@@ -167,7 +168,6 @@ namespace Boostup.API.Controllers.Auth
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
-
             }
         }
 

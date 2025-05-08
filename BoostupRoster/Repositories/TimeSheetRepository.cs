@@ -1,17 +1,35 @@
-﻿using Boostup.API.Data;
+﻿using AutoMapper;
+using Boostup.API.Data;
 using Boostup.API.Entities;
+using Boostup.API.Entities.Common;
 using Boostup.API.Entities.Dtos.Request;
+using Boostup.API.Entities.Dtos.Response;
 using Boostup.API.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boostup.API.Repositories
 {
     public class TimeSheetRepository :BaseRepository<Timesheet> , ITimesheetRepository
     {
-        public TimeSheetRepository(ApplicationDbContext dbContext):base(dbContext) 
+        private readonly IMapper mapper;
+
+        public TimeSheetRepository(ApplicationDbContext dbContext , IMapper mapper):base(dbContext) 
         {
-            
+            this.mapper = mapper;
         }
 
+        public async new Task<PaginatedResponse<TimeSheetResponse>?> GetPaginated(int pageNumber, int pageSize)
+        {
+            var rows = await dbContext.Set<Timesheet>()
+                .Include(t => t.Employee)
+                .ThenInclude(emp => emp.User)
+                .Include(t=>t.Job)
+                 .OrderByDescending(x => EF.Property<object>(x, "Id")).Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
+            var totalCount = await dbContext.Set<Timesheet>().CountAsync();
+            var resultCount = rows.Count();
+            var mappedRows = mapper.Map<IEnumerable<TimeSheetResponse>>(rows);
+            return new PaginatedResponse<TimeSheetResponse>(mappedRows, totalCount, resultCount, pageNumber, pageSize);
+        }
 
         public async Task<Timesheet?> Add(ClockInRequest request)
         {

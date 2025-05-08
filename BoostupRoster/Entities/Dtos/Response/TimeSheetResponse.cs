@@ -16,5 +16,8 @@
         public string? TotalHours { get; set; }
 
         public DateOnly Date { get; set; }
+
+        public EmployeeBasicResponse Employee { get; set; }
+        public JobResponseBasic Job { get; set; }
     }
 }

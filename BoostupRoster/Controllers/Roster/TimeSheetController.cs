@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Boostup.API.Validations;
+using Boostup.API.Entities.Dtos.Response;
 
 namespace Boostup.API.Controllers.Roster
 {
@@ -87,6 +88,36 @@ namespace Boostup.API.Controllers.Roster
                 };
             }
 
+        }
+
+        [HttpGet]
+        [Route("get-paginated")]
+        [Authorize (Roles ="SuperAdmin")]
+        public async Task<IActionResult> GetPaginated([FromQuery] int pageNumber, int pageSize)
+        {
+            try
+            {
+                var data = await timesheetRepository.GetPaginated(pageNumber, pageSize);
+                return Ok(new ApiResponse<PaginatedResponse<TimeSheetResponse>?>()
+                {
+                    Data = data,
+                    Success = true,
+                    Message = "Timesheet Record Fetched Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in fetching paginated data of timesheet " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
         }
     }
 }

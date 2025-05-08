@@ -53,5 +53,36 @@ namespace Boostup.API.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("admin")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> GetAdminOverview()
+        {
+            try
+            {
+                var data = await overviewRepository.GetAdminDashboardOverview();
+                return Ok(new ApiResponse<object>()
+                {
+                    Data = data,
+                    Success = true,
+                    Message = "Admin Overview Fetched Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Exception occured in fetching employee overview " + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+
+        }
     }
 }
