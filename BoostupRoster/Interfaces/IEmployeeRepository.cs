@@ -14,6 +14,8 @@ namespace Boostup.API.Interfaces
         Task<EmployeeDetailResponse?> UpdateEmployee(EmployeeProfileUpdateRequest request);
         Task<EmployeeProfileImage> UpdateProfileImage(EmployeeProfileImageRequest request);
         Task<IEnumerable<EmployeeBasicResponse>?> GetAll();
+        Task<PaginatedResponse<EmployeeDetailResponse?>> SearchEmployee(EmployeeSearchRequest request);
+
 
     }
 }

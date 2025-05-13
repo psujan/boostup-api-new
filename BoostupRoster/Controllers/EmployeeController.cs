@@ -250,5 +250,36 @@ namespace Boostup.API.Controllers
                 };
             }
         }
+
+        [MapToApiVersion(1)]
+        [HttpGet]
+        [Route("search")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> Search([FromQuery]EmployeeSearchRequest request)
+        {
+            try
+            {
+                var data = await employeeRepository.SearchEmployee(request);
+                return Ok(new ApiResponse<PaginatedResponse<EmployeeDetailResponse>?>()
+                {
+                    Success = true,
+                    Data = data,
+                    Message = "Searching Successful"
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error In Fetching Getting All Employee" + ex.Message);
+                return new ObjectResult(new ApiResponse<string>()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = ""
+                })
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+        }
     }
 }

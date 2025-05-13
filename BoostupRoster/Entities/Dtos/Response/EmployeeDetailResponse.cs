@@ -23,5 +23,6 @@
         public string UserId { get; set; }
         public UserResponse User { get; set; }
         public EmployeeImageResponse? Image { get; set; }
+        public ICollection<EmployeeAvailability>? Availabilities { get; set; }
     }
 }

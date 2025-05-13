@@ -62,14 +62,44 @@ namespace Boostup.API.Repositories
         {
             var rows = dbContext.EmployeeDetail
                         .Include(employee => employee.User)
+                        .Include(employee => employee.Availabilities)
                         .Skip((pageNumber - 1) * pageSize)
-                        .Take(pageSize)
+                        .Take(pageSize) 
                         .AsNoTracking();
             var data = await rows.ToListAsync();
             var totalCount = await dbContext.EmployeeDetail.CountAsync();
             var resultCount = rows.Count();
             var mappedData = mapper.Map<IEnumerable<EmployeeDetailResponse>>(data);
             return new PaginatedResponse<EmployeeDetailResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
+        }
+
+        public async Task<PaginatedResponse<EmployeeDetailResponse?>> SearchEmployee(EmployeeSearchRequest request)
+        {
+            IQueryable<EmployeeDetail> query = dbContext.Set<EmployeeDetail>();
+            query = query.Include(e => e.User);
+
+            if(!string.IsNullOrEmpty(request.Search))
+            {
+                bool isNumeric = int.TryParse(request.Search, out int id);
+                if (isNumeric)
+                {
+                    query = query.Where(e => e.Id == id);
+                }
+                else
+                {
+                    query = query.Where( e => e.User.FullName.Contains(request.Search));
+                }
+            }
+
+            var rows = await query.Skip((request.PageNumber - 1) * request.PageSize)
+                        .Take(request.PageSize)
+                        .AsNoTracking()
+                        .ToListAsync();
+            var totalCount = await query.CountAsync();
+            var resultCount = rows.Count();
+            var mappedData = mapper.Map<IEnumerable<EmployeeDetailResponse>>(rows);
+            return new PaginatedResponse<EmployeeDetailResponse?>(mappedData, totalCount, resultCount, request.PageNumber, request.PageSize);
+
         }
 
         public async Task<EmployeeDetailResponse?> UpdateEmployee(EmployeeProfileUpdateRequest request)
@@ -127,5 +157,6 @@ namespace Boostup.API.Repositories
             await dbContext.SaveChangesAsync();
             return employeeImage;
         }
+
     }
 }
