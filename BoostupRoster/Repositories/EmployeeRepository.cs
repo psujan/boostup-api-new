@@ -76,9 +76,10 @@ namespace Boostup.API.Repositories
         public async Task<PaginatedResponse<EmployeeDetailResponse?>> SearchEmployee(EmployeeSearchRequest request)
         {
             IQueryable<EmployeeDetail> query = dbContext.Set<EmployeeDetail>();
-            query = query.Include(e => e.User);
+            query = query.Include(e => e.User).Include(employee => employee.Availabilities);
+             
 
-            if(!string.IsNullOrEmpty(request.Search))
+            if (!string.IsNullOrEmpty(request.Search))
             {
                 bool isNumeric = int.TryParse(request.Search, out int id);
                 if (isNumeric)
