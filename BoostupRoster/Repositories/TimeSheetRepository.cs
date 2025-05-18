@@ -51,11 +51,11 @@ namespace Boostup.API.Repositories
                 throw new Exception("Timesheet Record Not Found");
             }
 
-            // Do Not clock Out if already done
-            if(timesheet.UpdatedAt != null)
-            {
-                throw new Exception("Timesheet Record Is Already Updated. Can't Clock Out Multiple Times");
-            }
+            //// Do Not clock Out if already done
+            //if(timesheet.UpdatedAt != null)
+            //{
+            //    throw new Exception("Timesheet Record Is Already Updated. Can't Clock Out Multiple Times");
+            //}
 
             timesheet.ClockOut = request.ClockOut;
             timesheet.TotalHours = Decimal.Parse(request.TotalHours);
