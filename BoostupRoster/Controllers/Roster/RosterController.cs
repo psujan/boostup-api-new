@@ -36,7 +36,14 @@ namespace Boostup.API.Controllers.Roster
                 {
                     throw new Exception("Request is empty. Please provide valid request");
                 }
+                var isValid = await rosterRepository.ValidateRoster(requests.ToList());
+
+                if (!isValid) 
+                {
+                    throw new Exception("Request is not valid. Some Same Shifts Are Already Added.");
+                }
                 var roster = await rosterRepository.AddRoster(requests.ToList());
+
                 return Ok(new ApiResponse<List<Entities.Roster>?>()
                 {
                     Success = true,

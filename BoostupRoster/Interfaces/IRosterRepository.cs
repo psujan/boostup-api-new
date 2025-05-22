@@ -7,6 +7,7 @@ namespace Boostup.API.Interfaces
 {
     public interface IRosterRepository
     {
+        Task<bool> ValidateRoster(List<RosterRequest> request);
         Task<List<Roster>> AddRoster(List<RosterRequest> request);
         Task<Roster?> DeleteRoster(int Id);
         //Task<IEnumerable<EmployeeWithRosterResponse>?> ListRoster(RosterFilterRequest request);

@@ -143,5 +143,49 @@ namespace Boostup.API.Repositories
             return new PaginatedResponse<RosterResponse?>(mappedData, totalCount, resultCount, pageNumber, pageSize);
 
         }
+
+        public async Task<bool> ValidateRoster(List<RosterRequest> request)
+        {
+            try
+            {
+                var isValid = true;
+                var roster = new List<Roster>();
+                for (int i = 0; i < request.Count; i++)
+                {
+                    isValid = await CheckSimilarRoster(request[i]);
+                }
+                return isValid;
+            }
+            catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<bool> CheckSimilarRoster(RosterRequest request)
+        {
+            var isValid = true;
+            var date = DateOnly.Parse(request.Date);
+            var isExist = await dbContext.Roster.Where(r => r.EmployeeId == request.EmployeeId
+                && r.Date == date
+                && r.StartTime == request.StartTime)
+                .ToListAsync();
+
+            if (isExist.Count > 0)
+            {
+                isValid = false;
+                throw new Exception("Employee with id " + request.EmployeeId + " already has shift on " + request.Date + " starting from " + request.StartTime);
+            }
+
+            var rosters = await dbContext.Roster.Where(r => r.EmployeeId == request.EmployeeId && r.Date == date).ToListAsync();
+
+            if (rosters.Count > 3)
+            {
+                isValid = false;
+                throw new Exception("Employee with id " + request.EmployeeId + " has already  3 shifts on" + request.Date);
+            }
+
+            return isValid;
+        }
     }
 }
